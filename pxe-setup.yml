@@ -1,0 +1,45 @@
+- name: Install PXE Components
+  hosts: localhost
+  become: true
+  tasks:
+
+   - name: Install TFTP
+     ansible.builtin.dnf:
+       name: tftp-server
+       state: latest
+
+   - name: Install Boot Files
+     ansible.builtin.dnf:
+       name: syslinux,shim-x64,grub2-efi-x64
+       installroot: /opt/syslinux
+       state: present
+
+   - name: Set Up BIOS Boot Dir
+     ansible.builtin.file:
+       path: "/var/lib/tftpboot/pxelinux.cfg"
+       state: directory
+
+   - name: Copy BIOS Boot Files
+     ansible.builtin.copy:
+       src: "{{ item }}"
+       dest: /var/lib/tftpboot/pxelinux.cfg
+     with_items:
+       - /opt/syslinux/usr/share/syslinux/pxelinux.0
+       - /opt/syslinux/usr/share/syslinux/menu.c32
+       - /opt/syslinux/usr/share/syslinux/vesamenu.c32
+       - /opt/syslinux/usr/share/syslinux/ldlinux.c32
+       - /opt/syslinux/usr/share/syslinux/libcom32.c32
+       - /opt/syslinux/usr/share/syslinux/libutil.c32
+
+   - name: Set Up UEFI Boot Dir
+     ansible.builtin.file:
+       path: "/var/lib/tftpboot/uefi"
+       state: directory
+       
+   - name: Copy UEFI Boot Files
+     ansible.builtin.copy:
+       src: "{{ item }}"
+       dest: /var/lib/tftpboot/uefi
+     with_items:
+       - /opt/syslinux/boot/efi/EFI/rocky/shimx64.efi
+       - /opt/syslinux/boot/efi/EFI/rocky/grubx64.efi
