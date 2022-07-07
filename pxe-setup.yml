@@ -47,6 +47,7 @@
    - name: Write DHCP Config
      ansible.builtin.copy:
        dest: /etc/dhcp/dhcpd.conf
+       backup: yes
        content: |
         option arch code 93 = unsigned integer 16;
         
