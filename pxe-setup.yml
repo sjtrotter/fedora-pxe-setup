@@ -149,7 +149,7 @@
     - name: Enable and Restart DHCP
       ansible.builtin.systemd:
         name: dhcpd
-        state: reloaded
+        state: restarted
         enabled: yes
 
     - name: Enable and Start TFTP
