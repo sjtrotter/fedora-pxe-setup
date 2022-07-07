@@ -148,8 +148,11 @@
 
     - name: Enable and Start Services
       ansible.builtin.systemd:
-        name: tftp.socket,dhcpd
+        name: "{{ item }}"
         state: reloaded
         enabled: yes
+      with_items:
+      - tftp.socket
+      - dhcpd
   
   
