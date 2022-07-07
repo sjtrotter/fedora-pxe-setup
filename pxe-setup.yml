@@ -109,7 +109,7 @@
 
     - name: Write UEFI Boot Menu
       ansible.builtin.copy:
-        dest: /var/lib/tftpboot/pxelinux.cfg/default
+        dest: /var/lib/tftpboot/uefi/grub.cfg
         content: |
           function load_video {
             insmod efi_gop
