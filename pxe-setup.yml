@@ -56,6 +56,7 @@
       with_items:
       - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/images/pxeboot/vmlinuz
       - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/images/pxeboot/initrd.img
+      - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/images/install.img
 
     - name: Write DHCP Config
       ansible.builtin.copy:
@@ -129,13 +130,13 @@
           }
         
           menuentry 'Install Fedora 64-bit'  --class fedora --class gnu-linux --class gnu --class os {
-            linux $fw_path/f36/vmlinuz ip=dhcp inst.repo=https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/
-            initrd $fw_path/f36/initrd.img
+            linuxefi f36/vmlinuz ip=dhcp inst.repo=https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/ inst.stage2=f36/install.img
+            initrd f36/initrd.img
           }
         
           menuentry 'Install Fedora 36 Server'  --class fedora --class gnu-linux --class gnu --class os {
-            kernel f36/vmlinuz
-            append initrd=f36/initrd.img inst.repo=https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/ ip=dhcp ks=https://git.fedorahosted.org/cgit/spin-kickstarts.git/plain/fedora-install-server.ks?h=f21
+            linuxefi f36/vmlinuz inst.repo=https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/ ip=dhcp ks=https://git.fedorahosted.org/cgit/spin-kickstarts.git/plain/fedora-install-server.ks?h=f21
+            initrd f36/initrd.img
           }
 
     - name: Open DHCP and TFTP in Firewall
