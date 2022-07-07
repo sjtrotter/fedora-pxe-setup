@@ -80,7 +80,7 @@
             ddns-update-style none;
             range 192.168.1.1 192.168.1.254;
             
-            option domain-name-servers 192.168.1.254;
+            option domain-name-servers 8.8.8.8;
             option routers 192.168.1.254;
           
           }
