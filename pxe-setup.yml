@@ -3,9 +3,9 @@
   become: true
   tasks:
 
-    - name: Install TFTP, HTTP and DHCP
+    - name: Install TFTP and DHCP
       ansible.builtin.dnf:
-        name: tftp-server,dhcp-server,httpd
+        name: tftp-server,dhcp-server
         state: latest
 
     - name: Install Boot Files
@@ -57,11 +57,6 @@
       - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/images/pxeboot/vmlinuz
       - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/images/pxeboot/initrd.img
 
-    - name: Get Install Image
-      ansible.builtin.get_url:
-        url: https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/images/install.img
-        dest: /var/www
-        
     - name: Write DHCP Config
       ansible.builtin.copy:
         dest: /etc/dhcp/dhcpd.conf
@@ -160,12 +155,9 @@
 
     - name: Enable and Start TFTP
       ansible.builtin.systemd:
-        name: "{{ item }}"
+        name: tftp.socket
         state: started
         enabled: yes
-      with_items:
-        - tftp.socket
-        - httpd
 
   
   
