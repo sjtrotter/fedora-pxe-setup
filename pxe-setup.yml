@@ -101,7 +101,7 @@
           label linux
           menu label ^Install Fedora 36 64-bit
           kernel f36/vmlinuz
-          append initrd=f36/initrd.img inst.stage2=https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/ ip=dhcp
+          append initrd=f36/initrd.img inst.stage2=https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/ ip=dhcp
         
           label server
           menu label ^Install Fedora 36 ( Minimal Image )
@@ -129,7 +129,7 @@
           }
         
           menuentry 'Install Fedora 64-bit'  --class fedora --class gnu-linux --class gnu --class os {
-            linuxefi f36/vmlinuz ip=dhcp inst.repo=https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/ inst.stage2=f36/install.img
+            linuxefi f36/vmlinuz ip=dhcp inst.repo=https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/
             initrd f36/initrd.img
           }
         
