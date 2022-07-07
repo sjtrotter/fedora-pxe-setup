@@ -41,8 +41,8 @@
         src: "{{ item }}"
         dest: /var/lib/tftpboot/uefi
       with_items:
-        - /opt/syslinux/boot/efi/EFI/Fedora/shimx64.efi
-        - /opt/syslinux/boot/efi/EFI/Fedora/grubx64.efi
+        - /opt/syslinux/boot/efi/EFI/fedora/shimx64.efi
+        - /opt/syslinux/boot/efi/EFI/fedora/grubx64.efi
 
     - name: Set Up Kernel Dir
       ansible.builtin.file:
