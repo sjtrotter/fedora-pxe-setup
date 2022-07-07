@@ -3,9 +3,9 @@
   become: true
   tasks:
 
-    - name: Install TFTP
+    - name: Install TFTP and DHCP
       ansible.builtin.dnf:
-        name: tftp-server
+        name: tftp-server,dhcp-server
         state: latest
 
     - name: Install Boot Files
