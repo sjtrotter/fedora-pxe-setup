@@ -44,6 +44,19 @@
         - /opt/syslinux/boot/efi/EFI/Fedora/shimx64.efi
         - /opt/syslinux/boot/efi/EFI/Fedora/grubx64.efi
 
+    - name: Set Up Kernel Dir
+      ansible.builtin.file:
+        path: /var/lib/tftpboot/f36
+        state: directory
+
+    - name: Get Kernel and Initrd
+      ansible.builtin.get_url:
+        url: "{{ item }}"
+        dest: /var/lib/tftpboot/f36
+      with_items:
+      - https://https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/images/pxeboot/vmlinuz
+      - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/images/pxeboot/initrd.img
+
     - name: Write DHCP Config
       ansible.builtin.copy:
         dest: /etc/dhcp/dhcpd.conf
