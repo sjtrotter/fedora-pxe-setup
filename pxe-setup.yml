@@ -54,7 +54,7 @@
         url: "{{ item }}"
         dest: /var/lib/tftpboot/f36
       with_items:
-      - https://https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/images/pxeboot/vmlinuz
+      - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/images/pxeboot/vmlinuz
       - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/images/pxeboot/initrd.img
 
     - name: Write DHCP Config
