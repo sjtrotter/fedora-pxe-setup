@@ -130,4 +130,10 @@
       state: enabled
       permanent: yes
 
+  - name: Enable and Start Services
+    ansible.builtin.systemd:
+      name: tftp.socket,dhcpd
+      state: reloaded
+      enabled: yes
+  
   
