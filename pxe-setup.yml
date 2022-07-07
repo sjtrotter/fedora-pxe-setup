@@ -16,13 +16,13 @@
 
     - name: Set Up BIOS Boot Dir
       ansible.builtin.file:
-        path: "/var/lib/tftpboot/pxelinux.cfg"
+        path: "/var/lib/tftpboot/bios/pxelinux.cfg"
         state: directory
 
     - name: Copy BIOS Boot Files
       ansible.builtin.copy:
         src: "{{ item }}"
-        dest: /var/lib/tftpboot/pxelinux.cfg
+        dest: /var/lib/tftpboot/bios
       with_items:
         - /opt/syslinux/usr/share/syslinux/pxelinux.0
         - /opt/syslinux/usr/share/syslinux/menu.c32
@@ -87,7 +87,7 @@
 
     - name: Write BIOS Boot Menu
       ansible.builtin.copy:
-        dest: /var/lib/tftpboot/pxelinux.cfg/default
+        dest: /var/lib/tftpboot/bios/pxelinux.cfg/default
         content: |
           default vesamenu.c32
           prompt 1
