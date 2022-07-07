@@ -139,9 +139,12 @@
 
     - name: Open DHCP and TFTP in Firewall
       ansible.builtin.firewalld:
-        service: dhcp,tftp
+        service: "{{ item }}"
         state: enabled
         permanent: yes
+      with_items:
+      - dhcp
+      - tftp
 
     - name: Enable and Start Services
       ansible.builtin.systemd:
