@@ -143,8 +143,8 @@
         state: enabled
         permanent: yes
       with_items:
-      - dhcp
-      - tftp
+        - dhcp
+        - tftp
 
     - name: Enable and Restart DHCP
       ansible.builtin.systemd:
