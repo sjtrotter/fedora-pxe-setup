@@ -43,3 +43,27 @@
      with_items:
        - /opt/syslinux/boot/efi/EFI/rocky/shimx64.efi
        - /opt/syslinux/boot/efi/EFI/rocky/grubx64.efi
+
+   - name: Write DHCP Config
+     ansible.builtin.copy:
+       dest: /etc/dhcp/dhcpd.conf
+       content: |
+         subnet 192.168.1.0 netmask 255.255.255.0 {
+          if option arch = 00:07 {
+            # x64 UEFI
+            filename "uefi/shimx64.efi";
+            next-server 192.168.1.2;
+          } else {
+            # BIOS
+            filename "pxelinux.cfg/pxelinux.0";
+            next-server 192.168.1.2;
+          }
+          authoritative;
+          default-lease-time 600;
+          max-lease-time 7200;
+          ddns-update-style none;
+          
+          option domain-name-servers 192.168.1.1;
+          option routers 192.168.1.1;
+          
+         }
