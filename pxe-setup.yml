@@ -152,7 +152,7 @@
           }
         
           menuentry 'Install Fedora 64-bit'  --class fedora --class gnu-linux --class gnu --class os {
-            linuxefi f36/vmlinuz ip=dhcp inst.repo=https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/
+            linuxefi f36/vmlinuz ip=dhcp inst.repo=http://192.168.1.250/f36
             initrd f36/initrd.img
           }
         
