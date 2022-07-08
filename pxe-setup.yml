@@ -3,9 +3,9 @@
   become: true
   tasks:
 
-    - name: Install TFTP and DHCP
+    - name: Install TFTP, HTTP and DHCP
       ansible.builtin.dnf:
-        name: tftp-server,dhcp-server
+        name: tftp-server,dhcp-server,httpd
         state: latest
 
     - name: Install Boot Files
@@ -49,13 +49,36 @@
         path: /var/lib/tftpboot/f36
         state: directory
 
-    - name: Get Kernel and Initrd
+    - name: Get Kernel, Initrd and ISO
       ansible.builtin.get_url:
         url: "{{ item }}"
         dest: /var/lib/tftpboot/f36
       with_items:
-      - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/images/pxeboot/vmlinuz
-      - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/images/pxeboot/initrd.img
+        - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/images/pxeboot/vmlinuz
+        - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/images/pxeboot/initrd.img
+
+    - name: Prep for ISO Extraction
+      ansible.builtin.file:
+        path: /opt/iso
+        state: directory
+
+    - name: Get ISO
+      ansible.builtin.get_url:
+        url: https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/iso/Fedora-Server-dvd-x86_64-36-1.5.iso
+        dest: /opt
+
+    - name: Mount ISO
+      ansible.builtin.shell:
+        cmd: mount /opt/iso/Fedora-Server-dvd-x86_64-36-1.5.iso /opt/iso
+
+    - name: Copy ISO Files to Web Dir
+      ansible.builtin.copy:
+        src: /opt/iso
+        dest: /var/www/html/f36
+
+    - name: Unmount ISO
+      ansible.builtin.shell:
+        cmd: umount /opt/iso
 
     - name: Write DHCP Config
       ansible.builtin.copy:
@@ -146,6 +169,7 @@
       with_items:
         - dhcp
         - tftp
+        - http
 
     - name: Enable and Restart DHCP
       ansible.builtin.systemd:
@@ -153,11 +177,14 @@
         state: restarted
         enabled: yes
 
-    - name: Enable and Start TFTP
+    - name: Enable and Start TFTP and HTTP
       ansible.builtin.systemd:
-        name: tftp.socket
+        name: "{{ item }}"
         state: started
         enabled: yes
+      with_items:
+        - tftp.socket
+        - httpd
 
   
   
