@@ -73,7 +73,7 @@
 
     - name: Copy ISO Files to Web Dir
       ansible.builtin.copy:
-        src: /opt/iso/extract
+        src: /opt/iso/extract/
         dest: /var/www/html/f36
 
     - name: Unmount ISO
