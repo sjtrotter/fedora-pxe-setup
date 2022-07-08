@@ -54,8 +54,8 @@
         url: "{{ item }}"
         dest: /var/lib/tftpboot/f36
       with_items:
-        - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/images/pxeboot/vmlinuz
-        - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/os/images/pxeboot/initrd.img
+        - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/images/pxeboot/vmlinuz
+        - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/images/pxeboot/initrd.img
 
     - name: Prep for ISO Extraction
       ansible.builtin.file:
@@ -94,7 +94,7 @@
               next-server 192.168.1.250;
             } else {
               # BIOS
-              filename "pxelinux.cfg/pxelinux.0";
+              filename "bios/pxelinux.0";
               next-server 192.168.1.250;
             }
             authoritative;
