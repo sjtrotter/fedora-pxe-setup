@@ -57,28 +57,56 @@
         - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/images/pxeboot/vmlinuz
         - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/images/pxeboot/initrd.img
 
-    - name: Prep for ISO Extraction
-      ansible.builtin.file:
-        path: /opt/iso/extract
-        state: directory
+    # - name: Prep for ISO Extraction
+    #   ansible.builtin.file:
+    #     path: /opt/iso/extract
+    #     state: directory
 
-    - name: Get ISO
-      ansible.builtin.get_url:
-        url: https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/iso/Fedora-Server-dvd-x86_64-36-1.5.iso
-        dest: /opt/iso
+    # - name: Get ISO
+    #   ansible.builtin.get_url:
+    #     url: https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/iso/Fedora-Server-dvd-x86_64-36-1.5.iso
+    #     dest: /opt/iso
 
-    - name: Mount ISO
-      ansible.builtin.shell:
-        cmd: mount /opt/iso/Fedora-Server-dvd-x86_64-36-1.5.iso /opt/iso/extract
+    # - name: Mount ISO
+    #   ansible.builtin.shell:
+    #     cmd: mount /opt/iso/Fedora-Server-dvd-x86_64-36-1.5.iso /opt/iso/extract
 
-    - name: Copy ISO Files to Web Dir
+    # - name: Copy ISO Files to Web Dir
+    #   ansible.builtin.copy:
+    #     src: /opt/iso/extract/
+    #     dest: /var/www/html/f36
+
+    # - name: Unmount ISO
+    #   ansible.builtin.shell:
+    #     cmd: umount /opt/iso/extract
+
+    - name: Write Local Install Repo File
       ansible.builtin.copy:
-        src: /opt/iso/extract/
-        dest: /var/www/html/f36
+        dest: /etc/yum.repos.d/f36-inst.local.repo
+        content: |
+          [f36-inst.local]
+          name=Fedora 36 Local Install Repo
+          baseurl=https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/
+          enabled=1
+          gpgcheck=0
 
-    - name: Unmount ISO
+    - name: Sync Local Install Repo
       ansible.builtin.shell:
-        cmd: umount /opt/iso/extract
+        cmd: dnf reposync -a noarch -a x86_64 --delete --download-metadata --download-path /var/www/html/ --repoid f36-inst.local
+
+    - name: Get Install Image
+      ansible.builtin.get_url:
+        url: https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/images/install.img
+        dest: /var/www/html/f36-inst.local/images/
+        
+    - name: Get Other Install Files
+      ansible.builtin.get_url:
+        url: "{{ item }}"
+        dest: /var/www/html/f36-inst.local/
+      with_items:
+        - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/TRANS.TBL
+        - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/.treeinfo
+        - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/.discinfo
 
     - name: Write DHCP Config
       ansible.builtin.copy:
@@ -124,7 +152,7 @@
           label linux
           menu label ^Install Fedora 36 64-bit
           kernel ../f36/vmlinuz
-          append initrd=../f36/initrd.img inst.stage2=https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/ ip=dhcp
+          append initrd=../f36/initrd.img inst.repo=http://192.168.1.250/f36-inst.local/ ip=dhcp
         
           label server
           menu label ^Install Fedora 36 ( Minimal Image )
@@ -152,7 +180,7 @@
           }
         
           menuentry 'Install Fedora 64-bit'  --class fedora --class gnu-linux --class gnu --class os {
-            linuxefi f36/vmlinuz ip=dhcp inst.repo=http://192.168.1.250/f36
+            linuxefi f36/vmlinuz ip=dhcp inst.repo=http://192.168.1.250/f36-inst.local/
             initrd f36/initrd.img
           }
         
