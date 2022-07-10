@@ -57,29 +57,6 @@
         - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/images/pxeboot/vmlinuz
         - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/images/pxeboot/initrd.img
 
-    # - name: Prep for ISO Extraction
-    #   ansible.builtin.file:
-    #     path: /opt/iso/extract
-    #     state: directory
-
-    # - name: Get ISO
-    #   ansible.builtin.get_url:
-    #     url: https://download.fedoraproject.org/pub/fedora/linux/releases/36/Server/x86_64/iso/Fedora-Server-dvd-x86_64-36-1.5.iso
-    #     dest: /opt/iso
-
-    # - name: Mount ISO
-    #   ansible.builtin.shell:
-    #     cmd: mount /opt/iso/Fedora-Server-dvd-x86_64-36-1.5.iso /opt/iso/extract
-
-    # - name: Copy ISO Files to Web Dir
-    #   ansible.builtin.copy:
-    #     src: /opt/iso/extract/
-    #     dest: /var/www/html/f36
-
-    # - name: Unmount ISO
-    #   ansible.builtin.shell:
-    #     cmd: umount /opt/iso/extract
-
     - name: Write Local Install Repo File
       ansible.builtin.copy:
         dest: /etc/yum.repos.d/f36-inst.local.repo
@@ -109,7 +86,6 @@
         url: "{{ item }}"
         dest: /var/www/html/f36-inst.local/
       with_items:
-#        - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/TRANS.TBL
         - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/.treeinfo
         - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/.discinfo
 
