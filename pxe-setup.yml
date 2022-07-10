@@ -5,6 +5,9 @@
 
 # TODO:
 # - Template config files to use local IP space.
+#   - Until done, ensure you edit dhcpd section and bios/uefi config sections
+#     with appropriate IP space.
+# - Cleanup bios/uefi configs to only have initial manual install option.
 
     - name: Install TFTP, HTTP and DHCP
       ansible.builtin.dnf:
