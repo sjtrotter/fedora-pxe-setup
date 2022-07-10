@@ -94,6 +94,11 @@
       ansible.builtin.shell:
         cmd: dnf reposync -a noarch -a x86_64 --delete --download-metadata --download-path /var/www/html/ --repoid f36-inst.local
 
+    - name: Make Image Directory
+      ansible.builtin.file:
+        path: /var/www/html/f36-inst.local/images/
+        state: directory
+
     - name: Get Install Image
       ansible.builtin.get_url:
         url: https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/images/install.img
