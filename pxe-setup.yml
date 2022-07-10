@@ -109,7 +109,7 @@
         url: "{{ item }}"
         dest: /var/www/html/f36-inst.local/
       with_items:
-        - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/TRANS.TBL
+#        - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/TRANS.TBL
         - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/.treeinfo
         - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/.discinfo
 
