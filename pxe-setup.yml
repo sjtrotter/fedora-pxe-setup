@@ -3,6 +3,9 @@
   become: true
   tasks:
 
+# TODO:
+# - Template config files to use local IP space.
+
     - name: Install TFTP, HTTP and DHCP
       ansible.builtin.dnf:
         name: tftp-server,dhcp-server,httpd
