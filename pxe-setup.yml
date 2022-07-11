@@ -38,7 +38,7 @@
         - { src: /opt/syslinux/boot/efi/EFI/fedora/shimx64.efi, dest: /var/lib/tftpboot/uefi/shimx64.efi }
         - { src: /opt/syslinux/boot/efi/EFI/fedora/grubx64.efi, dest: /var/lib/tftpboot/uefi/grubx64.efi }
       
-    - name: Download Kernel, Initrd, Install Image, .treeinfo and .discinfo
+    - name: Download Required Install Files
       ansible.builtin.get_url:
         url: "{{ item.src }}"
         dest: "{{ item.dest }}"
