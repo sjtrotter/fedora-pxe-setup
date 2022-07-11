@@ -77,7 +77,7 @@
         enabled: yes
       with_items:
         - { name: dhcpd, state: restarted }
-        - { name: tftpd.socket, state: started }
+        - { name: tftp.socket, state: started }
         - { name: httpd, state: started }
 
     - name: Write Local Install Repo File
