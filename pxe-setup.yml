@@ -47,13 +47,13 @@
 
     - name: Set Up Kernel Dir
       ansible.builtin.file:
-        path: /var/lib/tftpboot/f36
+        path: /var/www/html/f36-inst.local/images/pxeboot
         state: directory
 
     - name: Get Kernel and Initrd
       ansible.builtin.get_url:
         url: "{{ item }}"
-        dest: /var/lib/tftpboot/f36
+        dest: /var/www/html/f36-inst.local/images/pxeboot
       with_items:
         - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/images/pxeboot/vmlinuz
         - https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/images/pxeboot/initrd.img
