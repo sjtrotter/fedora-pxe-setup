@@ -9,5 +9,5 @@ localboot 0xffff
 
 label linux
 menu label ^Install Fedora 36 64-bit
-kernel ../f36/vmlinuz
-append initrd=../f36/initrd.img inst.repo=http://{{ ansible_default_ipv4.address }}/f36-inst.local/ ip=dhcp
+kernel {{ ansible_default_ipv4.address }}/f36-inst.local/images/pxeboot/vmlinuz
+append initrd={{ ansible_default_ipv4.address }}/f36-inst.local/images/pxeboot/initrd.img inst.repo=http://{{ ansible_default_ipv4.address }}/f36-inst.local/ ip=dhcp
