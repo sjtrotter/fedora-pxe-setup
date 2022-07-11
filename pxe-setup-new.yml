@@ -22,7 +22,6 @@
         - /var/lib/tftpboot/bios/pxelinux.cfg
         - /var/lib/tftpboot/uefi
         - /var/www/html/f36-inst.local/images/pxeboot
-        - /var/www/html/f36-inst.local/images/
 
     - name: Copy Required Boot Files
       ansible.builtin.copy:
