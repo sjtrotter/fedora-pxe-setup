@@ -25,7 +25,7 @@
       ansible.builtin.command:
         cmd: "{{ item }}"
       with_items:
-        - rpm --import https://www.forensics.cert.org/forensics.asc
+        - rpm --import https://forensics.cert.org/forensics.asc
         - rpm --import https://www.cert.org/forensics/repository/forensics-expires-2022-04-03.asc
 
     - name: Install Other Repo RPMs
