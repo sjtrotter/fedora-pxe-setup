@@ -86,7 +86,7 @@
 
     - name: Get NM exe Location
       ansible.builtin.find:
-        patterns: "*.exe"
+        patterns: "*.exe,*.ico"
         paths: "/opt"
         recurse: yes
       register: nmlocation
@@ -99,3 +99,4 @@
           Type=Application
           Name=Network Miner
           Exec=mono {{ nmlocation.files[0].path }} --noupdatecheck
+          Icon={{ nmlocation.files[1].path }}
