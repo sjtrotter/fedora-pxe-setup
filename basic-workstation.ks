@@ -37,8 +37,6 @@ timezone America/Chicago --utc
 
 #Root password
 rootpw --lock
-#user --groups=wheel --name=raven --password=$y$j9T$PPOsnYE40GwL3Q5vgNN.YaFn$W6uIV74vTi7Mz5O0RAfCgIFMDIbHEughnvd4nJ/6XA0 --iscrypted --gecos="raven"
-
 #user --groups=wheel --name=user --password=workstation --gecos="user"
 %post --log=/root/post.log
 
