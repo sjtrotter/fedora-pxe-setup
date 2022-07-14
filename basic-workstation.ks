@@ -38,10 +38,10 @@ timezone America/Chicago --utc
 #Root password
 rootpw --lock
 #user --groups=wheel --name=user --password=workstation --gecos="user"
-%post --log=/root/post.log
+%post
 
-exec < /dev/tty4 > /dev/tty4
-chvt 4
+chvt 3
+{
 
 dnf install ansible wget -y
 
@@ -49,6 +49,7 @@ wget http://{{ ansible_default_ipv4.address }}/f36-inst.local/plays/workstation-
 
 ansible-playbook workstation-post.yml
 
+} 2>&1 | tee /root/post.log > /dev/tty3
 chvt 6
 
 %end
