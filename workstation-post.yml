@@ -41,13 +41,31 @@
 
     - name: Install Tools Packages
       ansible.builtin.dnf:
-        name: mono-devel,net-tools,nmap,putty,screen,suricata,tcpdump,tcpreplay,wireshark,yara,yubioath-desktop,google-chrome-stable,code,brim,zeek,Autopsy,Volatility,avml
+        name:
+          - mono-devel
+          - net-tools
+          - nmap
+          - putty
+          - screen
+          - suricata
+          - tcpdump
+          - tcpreplay
+          - wireshark
+          - yara
+          - yubioath-desktop
+          - google-chrome-stable
+          - code
+          - brim
+          - zeek
+          - Autopsy
+          - Volatility
+          - avml
         state: latest
 
     - name: Get NetworkMiner Zip
       ansible.builtin.get_url:
-        - url: https://www.netresec.com/?download=NetworkMiner
-        - dest: /tmp/nm.zip
+        url: https://www.netresec.com/?download=NetworkMiner
+        dest: /tmp/nm.zip
     
     - name: Extract and chmod NetworkMiner
       ansible.builtin.command:
