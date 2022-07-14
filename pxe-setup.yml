@@ -39,6 +39,8 @@
         - { src: /opt/syslinux/usr/share/syslinux/lpxelinux.0, dest: /var/lib/tftpboot/bios/lpxelinux.0 }
         - { src: /opt/syslinux/boot/efi/EFI/fedora/shimx64.efi, dest: /var/lib/tftpboot/uefi/shimx64.efi }
         - { src: /opt/syslinux/boot/efi/EFI/fedora/grubx64.efi, dest: /var/lib/tftpboot/uefi/grubx64.efi }
+        - { src: workstation-post.yml, dest: /var/www/html/f36-inst.local/plays/workstation-post.yml }
+
       
     - name: Download Required Install Files
       ansible.builtin.get_url:
@@ -59,7 +61,6 @@
         - { src: dhcpd.conf, dest: /etc/dhcp/dhcpd.conf }
         - { src: default, dest: /var/lib/tftpboot/bios/pxelinux.cfg/default }
         - { src: grub.cfg, dest: /var/lib/tftpboot/uefi/grub.cfg }
-        - { src: workstation-post.yml, dest: /var/www/html/f36-inst.local/plays/workstation-post.yml }
         - { src: basic-workstation.ks, dest: /var/www/html/f36-inst.local/ks/basic-workstation.ks }
 
     - name: Open Required Ports in Firewall
