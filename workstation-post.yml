@@ -21,14 +21,21 @@
           - gnome-shell-extension-window-list
         state: latest
     
+    -name: Install CERT Repo Keys
+      ansible.builtin.command:
+        cmd: "{{ item }}"
+      with_items:
+        - rpm --import https://www.forensics.cert.org/forensics.asc
+        - rpm --import https://www.cert.org/forensics/repository/forensics-expires-2022-04-03.asc
+
     - name: Install Other Repo RPMs
       ansible.builtin.dnf:
         name:
           - https://forensics.cert.org/cert-forensics-tools-release-36.rpm
-          - https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+          - fedora-workstation-repositories
         state: installed
 
-    - name: Write Manual Repo (vscode)
+    - name: Write vscode Repo
       ansible.builtin.copy:
         dest: /etc/yum.repos.d/vscode.repo
         content: |
@@ -61,6 +68,7 @@
           - Volatility
           - avml
         state: latest
+        enablerepo: google-chrome
 
     - name: Get NetworkMiner Zip
       ansible.builtin.get_url:
