@@ -76,8 +76,8 @@
         dest: /tmp/nm.zip
     
     - name: Extract and chmod NetworkMiner
-      ansible.builtin.command:
-        cmd: "{{ item }}"
+      ansible.builtin.shell:
+        shell: "{{ item }}"
       with_items: 
         - unzip /tmp/nm.zip -d /opt/
         - chmod +x /opt/NetworkMiner*/NetworkMiner.exe
