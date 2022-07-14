@@ -41,7 +41,7 @@ rootpw --lock
 %post --log=/root/post.log
 
 exec < /dev/tty1 > /dev/tty1
-chvt 1
+chvt 4
 
 dnf install ansible wget -y
 
