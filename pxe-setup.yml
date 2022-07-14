@@ -22,6 +22,8 @@
         - /var/lib/tftpboot/bios/pxelinux.cfg
         - /var/lib/tftpboot/uefi
         - /var/www/html/f36-inst.local/images/pxeboot
+        - /var/www/html/f36-inst.local/ks
+        - /var/www/html/f36-inst.local/plays
 
     - name: Copy Required Boot Files
       ansible.builtin.copy:
@@ -57,6 +59,8 @@
         - { src: dhcpd.conf, dest: /etc/dhcp/dhcpd.conf }
         - { src: default, dest: /var/lib/tftpboot/bios/pxelinux.cfg/default }
         - { src: grub.cfg, dest: /var/lib/tftpboot/uefi/grub.cfg }
+        - { src: workstation-post.yml, dest: /var/www/html/f36-inst.local/plays/workstation-post.yml }
+        - { src: basic-workstation.ks, dest: /var/www/html/f36-inst.local/ks/basic-workstation.ks }
 
     - name: Open Required Ports in Firewall
       ansible.builtin.firewalld:
