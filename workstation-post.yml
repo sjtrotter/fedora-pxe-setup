@@ -84,6 +84,13 @@
         - chmod -R go+w /opt/NetworkMiner*/AssembledFiles
         - chmod -R go+w /opt/NetworkMiner*/Captures
 
+    - name: Get NM exe Location
+      ansible.builtin.find:
+        patterns: "*.exe"
+        paths: "/opt"
+        recurse: yes
+      register: nmlocation
+
     - name: Write NetworkMiner Desktop File
       ansible.builtin.copy:
         dest: /usr/share/applications/NetworkMiner.desktop
@@ -91,4 +98,4 @@
           [Desktop Entry]
           Type=Application
           Name=Network Miner
-          Exec=mono /opt/NetworkMiner.exe --noupdatecheck
+          Exec=mono {{ nmlocation.files[0].path }} --noupdatecheck
