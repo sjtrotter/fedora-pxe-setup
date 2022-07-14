@@ -99,4 +99,3 @@
           Type=Application
           Name=Network Miner
           Exec=mono {{ nmlocation.files[0].path }} --noupdatecheck
-          Icon={{ nmlocation.files[1].path }}
