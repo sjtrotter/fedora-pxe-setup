@@ -21,7 +21,7 @@
           - gnome-shell-extension-window-list
         state: latest
     
-    -name: Install CERT Repo Keys
+    - name: Install CERT Repo Keys
       ansible.builtin.command:
         cmd: "{{ item }}"
       with_items:
