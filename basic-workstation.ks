@@ -40,7 +40,7 @@ rootpw --lock
 #user --groups=wheel --name=user --password=workstation --gecos="user"
 %post --log=/root/post.log
 
-exec < /dev/tty1 > /dev/tty1
+exec < /dev/tty4 > /dev/tty4
 chvt 4
 
 dnf install ansible wget -y
