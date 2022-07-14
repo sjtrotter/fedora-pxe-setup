@@ -64,7 +64,7 @@
           - code
           - brim
           - zeek
-          - Autopsy
+          - autopsy
           - Volatility
           - avml
         state: latest
