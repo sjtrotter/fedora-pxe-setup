@@ -45,7 +45,7 @@ exec </dev/tty3> /dev/tty3
 
 clear
 
-echo updating all packages except kernel...
+echo installing ansible
 dnf install ansible wget -y
 
 echo getting playbook and networkminer icon
