@@ -149,6 +149,27 @@
           [org/gnome/desktop/interface]
           color-scheme='prefer-dark'
 
+    - name: Template Wallpaper XML
+      ansible.builtin.copy:
+        dest: "{{ item.dest }}"
+        content: |
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE wallpapers SYSTEM "gnome-wp-list.dtd">
+          <wallpapers>
+            <wallpaper>
+              <name>{{ item.name.strip(".png") }}</name>
+              <filename>/usr/share/backgrounds/{{ item.name }}</filename>
+              <options>stretch</options>
+              <pcolor>#000000</pcolor>
+              <scolor>#FFFFFF</scolor>
+            </wallpaper>
+          </wallpapers>
+      with_items:
+        - { name: Low-Poly-Raven.png, dest: /usr/share/gnome-background-properties/lpr.xml }
+        - { name: 3-Eyed-Raven.png, dest: /usr/share/gnome-background-properties/3er.xml }
+        - { name: Flight-On-Raven.png, dest: /usr/share/gnome-background-properties/for.xml }
+        - { name: Whispy-Raven.png, dest: /usr/share/gnome-background-properties/wr.xml }
+
     - name: Update dconf
       ansible.builtin.shell:
         cmd: dconf update
