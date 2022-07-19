@@ -160,7 +160,7 @@
           <!DOCTYPE wallpapers SYSTEM "gnome-wp-list.dtd">
           <wallpapers>
             <wallpaper deleted='false'>
-              <name>{{ item.name.split(".")[0].split('-').title() }}</name>
+              <name>{{ item.name.split(".")[0].split('-') | title }}</name>
               <filename>/usr/share/backgrounds/{{ item.name }}</filename>
               <filename-dark>/usr/share/backgrounds/{{ item.name }}</filename-dark>
               <options>zoom</options>
