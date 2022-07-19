@@ -83,10 +83,11 @@
         - chmod +x /opt/NetworkMiner*/NetworkMiner.exe
         - chmod -R go+w /opt/NetworkMiner*/AssembledFiles
         - chmod -R go+w /opt/NetworkMiner*/Captures
+        - mv networkminer.png /opt/NetworkMiner*/networkminer.png
 
     - name: Get NM exe Location
       ansible.builtin.find:
-        patterns: "*.exe,*.ico"
+        patterns: "*.exe,*.png"
         paths: "/opt"
         recurse: yes
       register: nmlocation
@@ -99,3 +100,4 @@
           Type=Application
           Name=Network Miner
           Exec=mono {{ nmlocation.files[0].path }} --noupdatecheck
+          Icon={{ nmlocation.files[1].path }}

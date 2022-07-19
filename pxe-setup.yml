@@ -24,6 +24,7 @@
         - /var/www/html/f36-inst.local/images/pxeboot
         - /var/www/html/f36-inst.local/ks
         - /var/www/html/f36-inst.local/plays
+        - /var/www/html/f36-inst.local/other
 
     - name: Copy Required Boot Files
       ansible.builtin.copy:
@@ -40,6 +41,7 @@
         - { src: /opt/syslinux/boot/efi/EFI/fedora/shimx64.efi, dest: /var/lib/tftpboot/uefi/shimx64.efi }
         - { src: /opt/syslinux/boot/efi/EFI/fedora/grubx64.efi, dest: /var/lib/tftpboot/uefi/grubx64.efi }
         - { src: workstation-post.yml, dest: /var/www/html/f36-inst.local/plays/workstation-post.yml }
+        - { src: networkminer.png, dest: /var/www/html/f36-inst.local/other/networkminer.png }
 
       
     - name: Download Required Install Files
