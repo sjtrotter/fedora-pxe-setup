@@ -146,7 +146,7 @@
       ansible.builtin.copy:
         dest: /etc/dconf/db/local.d/00-darkmode
         content: |
-          [org/gnome/desktop/wm/preferences]
+          [org/gnome/desktop/interface]
           color-scheme='prefer-dark'
 
     - name: Update dconf
