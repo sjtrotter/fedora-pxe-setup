@@ -135,6 +135,13 @@
           primary-color='000000'
           secondary-color='FFFFFF'
 
+    - name: Add Window Buttons (maximize, minimize)
+      ansible.builtin.copy:
+        dest: /etc/dconf/db/local.d/00-windowbuttons
+        content: |
+          [org/gnome/desktop/wm/preferences]
+          button-layout='appmenu:minimize,maximize,close'
+
     - name: Update dconf
       ansible.builtin.shell:
         cmd: dconf update
