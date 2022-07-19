@@ -40,11 +40,11 @@ rootpw --lock
 #user --groups=wheel --name=user --password=workstation --gecos="user"
 %post
 
+CR=$(printf '\r')
+
 chvt 1
-exec </dev/pts/0> /dev/pts/0
 
-clear
-
+{
 echo installing ansible
 dnf install ansible wget -y
 
@@ -54,6 +54,7 @@ wget http://{{ ansible_default_ipv4.address }}/f36-inst.local/other/networkminer
 
 echo running ansible playbook
 ansible-playbook workstation-post.yml
+} | sed "s/\$/$CR/" >> /dev/tty1
 
 chvt 6
 
