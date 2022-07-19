@@ -101,3 +101,21 @@
           Name=Network Miner
           Exec=mono {{ nmlocation.files[0].path }} --noupdatecheck
           Icon={{ nmlocation.files[1].path }}
+
+    - name: Write User Profile for Extensions
+      ansible.builtin.copy:
+        dest: /etc/dconf/db/local.d/00-extensions
+        content: |
+          [org/gnome/shell]
+          # List all extensions that you want to have enabled for all users
+          enabled-extensions=['apps-menu@gnome-shell-extensions.gcampax.github.com',
+                              'caffeine@patapon.info',
+                              'no-overview@fthx',
+                              'places-menu@gnome-shell-extensions.gcampax.github.com',
+                              'window-list@gnome-shell-extensions.gcampax.github.com']
+
+    - name: Update dconf
+      ansible.builtin.shell:
+        cmd: dconf update
+
+    
