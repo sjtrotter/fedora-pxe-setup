@@ -156,22 +156,24 @@
       ansible.builtin.copy:
         dest: "{{ item.dest }}"
         content: |
-          <?xml version="1.0" encoding="UTF-8"?>
+          <?xml version="1.0"?>
           <!DOCTYPE wallpapers SYSTEM "gnome-wp-list.dtd">
           <wallpapers>
-            <wallpaper>
-              <name>{{ item.name.split(".")[0] }}</name>
+            <wallpaper deleted='false'>
+              <name>{{ item.name.split(".")[0].split('-').title() }}</name>
               <filename>/usr/share/backgrounds/{{ item.name }}</filename>
-              <options>stretch</options>
+              <filename-dark>/usr/share/backgrounds/{{ item.name }}</filename-dark>
+              <options>zoom</options>
+              <shade_type>solid</shade_type>
               <pcolor>#000000</pcolor>
               <scolor>#FFFFFF</scolor>
             </wallpaper>
           </wallpapers>
       with_items:
-        - { name: Low-Poly-Raven.png, dest: /usr/share/gnome-background-properties/lpr.xml }
-        - { name: 3-Eyed-Raven.png, dest: /usr/share/gnome-background-properties/3er.xml }
-        - { name: Flight-On-Raven.png, dest: /usr/share/gnome-background-properties/for.xml }
-        - { name: Whispy-Raven.png, dest: /usr/share/gnome-background-properties/wr.xml }
+        - { name: low-poly-raven.png, dest: /usr/share/gnome-background-properties/low-poly-raven.xml }
+        - { name: 3-eyed-raven.png, dest: /usr/share/gnome-background-properties/3-eyed-raven.xml }
+        - { name: flight-on-raven.png, dest: /usr/share/gnome-background-properties/flight-on-raven.xml }
+        - { name: whispy-raven.png, dest: /usr/share/gnome-background-properties/whispy-raven.xml }
 
     - name: Update dconf
       ansible.builtin.shell:
