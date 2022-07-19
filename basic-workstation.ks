@@ -41,16 +41,20 @@ rootpw --lock
 %post
 
 chvt 3
-{
+exec </dev/tty3> /dev/tty3
 
+clear
+
+echo updating all packages except kernel...
 dnf install ansible wget -y
 
+echo getting playbook and networkminer icon
 wget http://{{ ansible_default_ipv4.address }}/f36-inst.local/plays/workstation-post.yml
 wget http://{{ ansible_default_ipv4.address }}/f36-inst.local/other/networkminer.png
 
+echo running ansible playbook
 ansible-playbook workstation-post.yml
 
-} 2>&1 | tee /root/post.log > /dev/tty3
 chvt 6
 
 %end
