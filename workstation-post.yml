@@ -67,14 +67,14 @@
 
     - name: Get NM exe Location
       ansible.builtin.find:
-        patterns: "*Network*.exe"
+        patterns: "*NetworkMiner.exe"
         paths: "/opt"
         recurse: yes
       register: nmexelocation
 
     - name: Get NM icon Location
       ansible.builtin.find:
-        patterns: "*Network*networkminer.png"
+        patterns: "*networkminer.png"
         paths: "/opt"
         recurse: yes
       register: nmiconlocation
