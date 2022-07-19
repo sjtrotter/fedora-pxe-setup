@@ -46,6 +46,7 @@ chvt 3
 dnf install ansible wget -y
 
 wget http://{{ ansible_default_ipv4.address }}/f36-inst.local/plays/workstation-post.yml
+wget http://{{ ansible_default_ipv4.address }}/f36-inst.local/other/networkminer.png
 
 ansible-playbook workstation-post.yml
 
