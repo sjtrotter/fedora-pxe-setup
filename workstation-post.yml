@@ -131,7 +131,7 @@
         content: |
           [org/gnome/desktop/background]
           picture-uri='file:///usr/share/backgrounds/low-poly-raven.png'
-          picture-options='scaled'
+          picture-options='stretched'
           primary-color='000000'
           secondary-color='FFFFFF'
 
@@ -141,6 +141,13 @@
         content: |
           [org/gnome/desktop/wm/preferences]
           button-layout='appmenu:minimize,maximize,close'
+
+    - name: Set Dark Mode
+      ansible.builtin.copy:
+        dest: /etc/dconf/db/local.d/00-darkmode
+        content: |
+          [org/gnome/desktop/wm/preferences]
+          color-scheme='prefer-dark'
 
     - name: Update dconf
       ansible.builtin.shell:
