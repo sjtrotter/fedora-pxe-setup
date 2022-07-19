@@ -118,6 +118,23 @@
           # List all extensions that you want to have enabled for all users
           enabled-extensions=['apps-menu@gnome-shell-extensions.gcampax.github.com','caffeine@patapon.info','no-overview@fthx','places-menu@gnome-shell-extensions.gcampax.github.com','window-list@gnome-shell-extensions.gcampax.github.com']
 
+    - name: Write User Favorite Apps
+      ansible.builtin.copy:
+        dest: /etc/dconf/db/local.d/00-favorite-apps
+        content: |
+          [org/gnome/shell]
+          favorite-apps = ['firefox.desktop','google-chrome.desktop','autopsy.desktop','code.desktop','gnome-text-editor.desktop','putty.desktop','gnome-connections.desktop','NetworkMiner.desktop','brim.desktop','gnome-terminal.desktop','nautilus.desktop']
+
+    - name: Set User Wallpaper
+      ansible.builtin.copy:
+        dest: /etc/dconf/db/local.d/00-background
+        content: |
+          [org/gnome/desktop/background]
+          picture-uri='file:///usr/share/backgrounds/low-poly-raven.png'
+          picture-options='scaled'
+          primary-color='000000'
+          secondary-color='FFFFFF'
+
     - name: Update dconf
       ansible.builtin.shell:
         cmd: dconf update
