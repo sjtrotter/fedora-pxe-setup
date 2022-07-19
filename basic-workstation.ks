@@ -51,7 +51,7 @@ dnf install ansible wget -y
 echo getting playbook and networkminer icon
 wget http://{{ ansible_default_ipv4.address }}/f36-inst.local/plays/workstation-post.yml
 wget http://{{ ansible_default_ipv4.address }}/f36-inst.local/other/networkminer.png
-wget -r -np -nH --cut-dirs=2 -R "index.html*" http://{{ ansible_default_ipv4.address }}/f36-inst.local/wallpapers/ -P /usr/share/backgrounds
+wget -r -np -nH --cut-dirs=1 -R "index.html*" http://{{ ansible_default_ipv4.address }}/f36-inst.local/wallpapers/ -P /usr/share/backgrounds
 
 echo running ansible playbook
 ansible-playbook workstation-post.yml
