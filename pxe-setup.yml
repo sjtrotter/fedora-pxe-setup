@@ -25,8 +25,8 @@
         - /var/www/html/f36-inst.local/ks
         - /var/www/html/f36-inst.local/plays
         - /var/www/html/f36-inst.local/other
-
-    - name: Copy Required Boot Files
+        
+    - name: Copy Required Files
       ansible.builtin.copy:
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
@@ -42,6 +42,7 @@
         - { src: /opt/syslinux/boot/efi/EFI/fedora/grubx64.efi, dest: /var/lib/tftpboot/uefi/grubx64.efi }
         - { src: workstation-post.yml, dest: /var/www/html/f36-inst.local/plays/workstation-post.yml }
         - { src: networkminer.png, dest: /var/www/html/f36-inst.local/other/networkminer.png }
+        - { src: wallpapers, dest: /var/www/html/f36-inst.local/ }
 
       
     - name: Download Required Install Files
