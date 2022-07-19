@@ -43,9 +43,9 @@ rootpw --lock
 CR=$(printf '\r')
 
 chvt 1
+clear
 
 {
-echo installing ansible
 dnf install ansible wget -y
 
 echo getting playbook and networkminer icon
@@ -54,7 +54,7 @@ wget http://{{ ansible_default_ipv4.address }}/f36-inst.local/other/networkminer
 
 echo running ansible playbook
 ansible-playbook workstation-post.yml
-} | sed "s/\$/$CR/" >> /dev/tty1
+} 2>&1 | sed "s/\$/$CR/" >> /dev/tty1
 
 chvt 6
 
