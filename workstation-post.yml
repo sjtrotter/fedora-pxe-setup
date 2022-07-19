@@ -67,14 +67,17 @@
 
     - name: Get NM exe Location
       ansible.builtin.find:
-        patterns: "*.exe,*.png"
+        patterns: "*Network*.exe"
         paths: "/opt"
         recurse: yes
-      register: nmlocation
+      register: nmexelocation
 
-    - name: NM Locations
-      ansible.builtin.debug:
-        msg: "NM: {{ nmlocation.files[0].path }} - icon: {{ nmlocation.files[1].path }}"
+    - name: Get NM icon Location
+      ansible.builtin.find:
+        patterns: "*Network*networkminer.png"
+        paths: "/opt"
+        recurse: yes
+      register: nmiconlocation
 
     - name: Write NetworkMiner Desktop File
       ansible.builtin.copy:
@@ -83,8 +86,8 @@
           [Desktop Entry]
           Type=Application
           Name=Network Miner
-          Exec=mono {{ nmlocation.files[0].path }} --noupdatecheck
-          Icon={{ nmlocation.files[1].path }}
+          Exec=mono {{ nmexelocation.files[0].path }} --noupdatecheck
+          Icon={{ nmiconlocation.files[0].path }}
 
     - name: Install Tools Packages
       ansible.builtin.dnf:
