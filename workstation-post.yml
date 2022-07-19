@@ -130,7 +130,7 @@
         dest: /etc/dconf/db/local.d/00-background
         content: |
           [org/gnome/desktop/background]
-          picture-uri='file:///usr/share/backgrounds/low-poly-raven.png'
+          picture-uri='file:///usr/share/backgrounds/Low-Poly-Raven.png'
           picture-options='stretched'
           primary-color='000000'
           secondary-color='FFFFFF'
@@ -157,7 +157,7 @@
           <!DOCTYPE wallpapers SYSTEM "gnome-wp-list.dtd">
           <wallpapers>
             <wallpaper>
-              <name>{{ item.name.strip(".png") }}</name>
+              <name>{{ item.name.split(".")[0] }}</name>
               <filename>/usr/share/backgrounds/{{ item.name }}</filename>
               <options>stretch</options>
               <pcolor>#000000</pcolor>
