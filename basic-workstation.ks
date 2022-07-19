@@ -40,8 +40,8 @@ rootpw --lock
 #user --groups=wheel --name=user --password=workstation --gecos="user"
 %post
 
-chvt 3
-exec </dev/tty3> /dev/tty3
+chvt 1
+exec </dev/pts/0> /dev/pts/0
 
 clear
 
