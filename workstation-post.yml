@@ -46,6 +46,46 @@
           gpgcheck=1
           gpgkey=https://packages.microsoft.com/keys/microsoft.asc
 
+    - name: Get NetworkMiner Zip
+      ansible.builtin.get_url:
+        url: https://www.netresec.com/?download=NetworkMiner
+        dest: /tmp/nm.zip
+    
+    - name: Extract NetworkMiner
+      ansible.builtin.unarchive:
+        src: /tmp/nm.zip
+        dest: /opt
+
+    - name: chmod NetworkMiner Files
+      ansible.builtin.shell:
+        cmd: "{{ item }}"
+      with_items: 
+        - chmod +x /opt/NetworkMiner*/NetworkMiner.exe
+        - chmod -R go+w /opt/NetworkMiner*/AssembledFiles
+        - chmod -R go+w /opt/NetworkMiner*/Captures
+        - mv networkminer.png /opt/NetworkMiner*
+
+    - name: Get NM exe Location
+      ansible.builtin.find:
+        patterns: "*.exe,*.png"
+        paths: "/opt"
+        recurse: yes
+      register: nmlocation
+
+    - name: NM Locations
+      ansible.builtin.debug:
+        msg: "NM: {{ nmlocation.files[0].path }} - icon: {{ nmlocation.files[1].path }}"
+
+    - name: Write NetworkMiner Desktop File
+      ansible.builtin.copy:
+        dest: /usr/share/applications/NetworkMiner.desktop
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name=Network Miner
+          Exec=mono {{ nmlocation.files[0].path }} --noupdatecheck
+          Icon={{ nmlocation.files[1].path }}
+
     - name: Install Tools Packages
       ansible.builtin.dnf:
         name:
@@ -69,38 +109,6 @@
           - avml
         state: latest
         enablerepo: google-chrome
-
-    - name: Get NetworkMiner Zip
-      ansible.builtin.get_url:
-        url: https://www.netresec.com/?download=NetworkMiner
-        dest: /tmp/nm.zip
-    
-    - name: Extract and chmod NetworkMiner
-      ansible.builtin.shell:
-        cmd: "{{ item }}"
-      with_items: 
-        - unzip /tmp/nm.zip -d /opt/
-        - chmod +x /opt/NetworkMiner*/NetworkMiner.exe
-        - chmod -R go+w /opt/NetworkMiner*/AssembledFiles
-        - chmod -R go+w /opt/NetworkMiner*/Captures
-        - mv networkminer.png /opt/NetworkMiner*
-
-    - name: Get NM exe Location
-      ansible.builtin.find:
-        patterns: "*.exe,*.png"
-        paths: "/opt"
-        recurse: yes
-      register: nmlocation
-
-    - name: Write NetworkMiner Desktop File
-      ansible.builtin.copy:
-        dest: /usr/share/applications/NetworkMiner.desktop
-        content: |
-          [Desktop Entry]
-          Type=Application
-          Name=Network Miner
-          Exec=mono {{ nmlocation.files[0].path }} --noupdatecheck
-          Icon={{ nmlocation.files[1].path }}
 
     - name: Write User Profile for Extensions
       ansible.builtin.copy:
