@@ -64,7 +64,7 @@
         pattern: "*.ks"
         file_type: file
         recurse: yes
-      register: kickstarts
+      register: kickstart
 
     - name: Test grub-automenu.cfg Template
       ansible.builtin.template:
