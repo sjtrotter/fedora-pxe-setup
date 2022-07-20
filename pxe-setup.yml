@@ -2,7 +2,7 @@
   hosts: localhost
   become: true
   vars:
-    version: "36"
+    version: 36
   tasks:
 
     - name: Install TFTP, HTTP and DHCP
