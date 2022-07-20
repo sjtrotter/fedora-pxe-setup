@@ -76,10 +76,13 @@
         recurse: yes
       register: kickstart
 
-    - name: Test grub-automenu.cfg Template
+    - name: Test Automenu Templates
       ansible.builtin.template:
-        src: grub-automenu.cfg
-        dest: grub-automenu.cfg.new
+        src: "{{ item }}"
+        dest: "{{ item }}.new"
+      with_items:
+        - grub-automenu.cfg
+        - default-automenu
         
     - name: Open Required Ports in Firewall
       ansible.builtin.firewalld:
