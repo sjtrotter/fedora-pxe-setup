@@ -64,9 +64,10 @@
         dest: "{{ item.dest }}"
       with_items:
         - { src: dhcpd.conf, dest: /etc/dhcp/dhcpd.conf }
-        - { src: default, dest: /var/lib/tftpboot/bios/pxelinux.cfg/default }
-        - { src: grub.cfg, dest: /var/lib/tftpboot/uefi/grub.cfg }
-        - { src: basic-workstation.ks, dest: "/var/www/html/f{{ version }}-inst.local/ks/basic-workstation.ks" }
+#        - { src: default, dest: /var/lib/tftpboot/bios/pxelinux.cfg/default }
+#        - { src: grub.cfg, dest: /var/lib/tftpboot/uefi/grub.cfg }
+        - { src: basic-workstation.ks, dest: "/var/www/html/f{{ version }}-inst.local/ks/fedora-{{ version }}-basic-workstation.ks" }
+        - { src: manual-install.ks, dest: "/var/www/html/f{{ version }}-inst.local/ks/fedora-{{ version }}-manual-install.ks" }
 
     - name: Get Kickstart File Listing
       ansible.builtin.find:
@@ -76,13 +77,13 @@
         recurse: yes
       register: kickstart
 
-    - name: Test Automenu Templates
+    - name: Write Automatic Menu Templates
       ansible.builtin.template:
-        src: "{{ item }}"
-        dest: "{{ item }}.new"
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}.new"
       with_items:
-        - grub-automenu.cfg
-        - default-automenu
+        - { src: default-automenu, dest: /var/lib/tftpboot/bios/pxelinux.cfg/default }
+        - { src: grub-automenu.cfg, dest: /var/lib/tftpboot/uefi/grub.cfg }
         
     - name: Open Required Ports in Firewall
       ansible.builtin.firewalld:
