@@ -99,6 +99,11 @@
           enabled=1
           gpgcheck=0
 
+    - name: Remove Earlier Versions Repo
+      ansible.builtin.file:
+        path: /var/www/html/f{{ version - 2 }}-inst.local
+        state: absent
+
     - name: Sync Local Install Repo (this will take A WHILE)
       ansible.builtin.shell:
         cmd: "dnf reposync -a noarch -a x86_64 --delete --download-metadata --download-path /var/www/html/ --repoid f{{ version }}-inst.local"
