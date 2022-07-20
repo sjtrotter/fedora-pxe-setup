@@ -190,7 +190,7 @@
             </wallpaper>
           </wallpapers>
       loop:
-        "{{ wallpapers }}"
+        "{{ wallpapers.files }}"
 #        - { name: "{{ wallpaper.path.split('/')[-1] }}", dest: "/usr/share/gnome-background-properties/{{ wallpaper.path.split('/')[-1].split('.')[0] }}.xml" }
 #        - { name: 3-eyed-raven.png, dest: /usr/share/gnome-background-properties/3-eyed-raven.xml }
 #        - { name: flight-on-raven.png, dest: /usr/share/gnome-background-properties/flight-on-raven.xml }
