@@ -46,16 +46,16 @@
           gpgcheck=1
           gpgkey=https://packages.microsoft.com/keys/microsoft.asc
 
-    - name: Write PowerShell Repo
-      ansible.builtin.copy:
-        dest: /etc/yum.repos.d/microsoft.repo
-        content: |
-          [powershell]
-          name=PowerShell
-          baseurl=https://packages.microsoft.com/rhel/8/prod
-          enabled=0
-          gpgcheck=1
-          gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+    # - name: Write PowerShell Repo
+    #   ansible.builtin.copy:
+    #     dest: /etc/yum.repos.d/microsoft.repo
+    #     content: |
+    #       [powershell]
+    #       name=PowerShell
+    #       baseurl=https://packages.microsoft.com/rhel/8/prod
+    #       enabled=0
+    #       gpgcheck=1
+    #       gpgkey=https://packages.microsoft.com/keys/microsoft.asc
 
     - name: Get NetworkMiner Zip
       ansible.builtin.get_url:
@@ -121,9 +121,9 @@
           - autopsy
           - Volatility
           - avml
-          - powershell
+          # - powershell
         state: latest
-        enablerepo: google-chrome,code,powershell
+        enablerepo: google-chrome,code #,powershell
 
     - name: Write User Profile for Extensions
       ansible.builtin.copy:
