@@ -133,8 +133,8 @@
         dest: /etc/dconf/db/local.d/00-background
         content: |
           [org/gnome/desktop/background]
-          picture-uri='file:///usr/share/backgrounds/Low-Poly-Raven.png'
-          picture-options='stretched'
+          picture-uri='file:///usr/share/backgrounds/wallpapers/low-poly-raven.png'
+          picture-options='zoom'
           primary-color='000000'
           secondary-color='FFFFFF'
 
@@ -170,10 +170,13 @@
             </wallpaper>
           </wallpapers>
       with_items:
-        - { name: low-poly-raven.png, dest: /usr/share/gnome-background-properties/low-poly-raven.xml }
-        - { name: 3-eyed-raven.png, dest: /usr/share/gnome-background-properties/3-eyed-raven.xml }
-        - { name: flight-on-raven.png, dest: /usr/share/gnome-background-properties/flight-on-raven.xml }
-        - { name: whispy-raven.png, dest: /usr/share/gnome-background-properties/whispy-raven.xml }
+        - { name: "{{ wallpaperitem.path.split('/')[-1] }}", dest: "/usr/share/gnome-background-properties/{{ wallpaperitem.path.split('/')[-1].split('.')[0] }}.xml" }
+#        - { name: 3-eyed-raven.png, dest: /usr/share/gnome-background-properties/3-eyed-raven.xml }
+#        - { name: flight-on-raven.png, dest: /usr/share/gnome-background-properties/flight-on-raven.xml }
+#        - { name: whispy-raven.png, dest: /usr/share/gnome-background-properties/whispy-raven.xml }
+      loop: "{{ wallpaper.files }}"
+      loop_control:
+        loop_var: wallpaperitem
 
     - name: Update dconf
       ansible.builtin.shell:
