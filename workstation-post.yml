@@ -42,7 +42,18 @@
           [code]
           name=Visual Studio Code
           baseurl=https://packages.microsoft.com/yumrepos/vscode
-          enabled=1
+          enabled=0
+          gpgcheck=1
+          gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+
+    - name: Write PowerShell Repo
+      ansible.builtin.copy:
+        dest: /etc/yum.repos.d/microsoft.repo
+        content: |
+          [powershell]
+          name=PowerShell
+          baseurl=https://packages.microsoft.com/rhel/8/prod
+          enabled=0
           gpgcheck=1
           gpgkey=https://packages.microsoft.com/keys/microsoft.asc
 
@@ -110,8 +121,9 @@
           - autopsy
           - Volatility
           - avml
+          - powershell
         state: latest
-        enablerepo: google-chrome
+        enablerepo: google-chrome,code,powershell
 
     - name: Write User Profile for Extensions
       ansible.builtin.copy:
