@@ -180,8 +180,8 @@
           <!DOCTYPE wallpapers SYSTEM "gnome-wp-list.dtd">
           <wallpapers>
             <wallpaper deleted='false'>
-              <name>{{ item.path.split(".")[0].split('-') | title }}</name>
-              <filename>/usr/share/backgrounds/wallpapers{{ item.path.split('/')[-1] }}</filename>
+              <name>{{ item.path.split('/')[-1].split(".")[0].split('-') | title }}</name>
+              <filename>/usr/share/backgrounds/wallpapers/{{ item.path.split('/')[-1] }}</filename>
               <filename-dark>/usr/share/backgrounds/wallpapers/{{ item.path.split('/')[-1] }}</filename-dark>
               <options>zoom</options>
               <shade_type>solid</shade_type>
