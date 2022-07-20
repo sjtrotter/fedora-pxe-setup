@@ -65,6 +65,11 @@
         type: directory
       register: html_dirs
 
+    - name: Test grub-automenu.cfg Template
+      ansible.builtin.template:
+        src: grub-automenu.cfg
+        dest: grub-automenu.cfg.new
+        
     - name: Copy Template Files
       ansible.builtin.template:
         src: "{{ item.src }}"
@@ -105,13 +110,6 @@
           baseurl=https://download.fedoraproject.org/pub/fedora/linux/releases/{{ version }}/Everything/x86_64/os/
           enabled=1
           gpgcheck=0
-
-    - name: Get HTML Directories
-      ansible.builtin.find:
-        pattern: "*"
-        path: /var/www/html
-        type: directory
-      register: html_dirs
 
     - name: Remove Earlier Versions Repo
       ansible.builtin.file:
