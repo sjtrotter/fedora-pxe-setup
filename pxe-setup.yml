@@ -58,6 +58,16 @@
         - { src: "https://download.fedoraproject.org/pub/fedora/linux/releases/{{ version }}/Everything/x86_64/os/.treeinfo", dest: "/var/www/html/f{{ version }}-inst.local/.treeinfo" }
         - { src: "https://download.fedoraproject.org/pub/fedora/linux/releases/{{ version }}/Everything/x86_64/os/.discinfo", dest: "/var/www/html/f{{ version }}-inst.local/.discinfo" }
 
+    - name: Copy Template Files
+      ansible.builtin.template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      with_items:
+        - { src: dhcpd.conf, dest: /etc/dhcp/dhcpd.conf }
+        - { src: default, dest: /var/lib/tftpboot/bios/pxelinux.cfg/default }
+        - { src: grub.cfg, dest: /var/lib/tftpboot/uefi/grub.cfg }
+        - { src: basic-workstation.ks, dest: "/var/www/html/f{{ version }}-inst.local/ks/basic-workstation.ks" }
+
     - name: Get Kickstart File Listing
       ansible.builtin.find:
         path: /var/www/html
@@ -71,16 +81,6 @@
         src: grub-automenu.cfg
         dest: grub-automenu.cfg.new
         
-    - name: Copy Template Files
-      ansible.builtin.template:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-      with_items:
-        - { src: dhcpd.conf, dest: /etc/dhcp/dhcpd.conf }
-        - { src: default, dest: /var/lib/tftpboot/bios/pxelinux.cfg/default }
-        - { src: grub.cfg, dest: /var/lib/tftpboot/uefi/grub.cfg }
-        - { src: basic-workstation.ks, dest: "/var/www/html/f{{ version }}-inst.local/ks/basic-workstation.ks" }
-
     - name: Open Required Ports in Firewall
       ansible.builtin.firewalld:
         service: "{{ item }}"
