@@ -101,7 +101,7 @@
 
     - name: Remove Earlier Versions Repo
       ansible.builtin.file:
-        path: /var/www/html/f{{ version - 2 }}-inst.local
+        path: "/var/www/html/f{{ version - 2 }}-inst.local"
         state: absent
 
     - name: Sync Local Install Repo (this will take A WHILE)
