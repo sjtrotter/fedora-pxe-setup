@@ -1,6 +1,8 @@
 - name: Install PXE Components
   hosts: localhost
   become: true
+  vars:
+    version: "36"
   tasks:
 
     - name: Install TFTP, HTTP and DHCP
@@ -21,10 +23,10 @@
       with_items:
         - /var/lib/tftpboot/bios/pxelinux.cfg
         - /var/lib/tftpboot/uefi
-        - /var/www/html/f36-inst.local/images/pxeboot
-        - /var/www/html/f36-inst.local/ks
-        - /var/www/html/f36-inst.local/plays
-        - /var/www/html/f36-inst.local/other
+        - /var/www/html/f{{ version }}-inst.local/images/pxeboot
+        - /var/www/html/f{{ version }}-inst.local/ks
+        - /var/www/html/f{{ version }}-inst.local/plays
+        - /var/www/html/f{{ version }}-inst.local/other
         
     - name: Copy Required Files
       ansible.builtin.copy:
@@ -40,9 +42,9 @@
         - { src: /opt/syslinux/usr/share/syslinux/lpxelinux.0, dest: /var/lib/tftpboot/bios/lpxelinux.0 }
         - { src: /opt/syslinux/boot/efi/EFI/fedora/shimx64.efi, dest: /var/lib/tftpboot/uefi/shimx64.efi }
         - { src: /opt/syslinux/boot/efi/EFI/fedora/grubx64.efi, dest: /var/lib/tftpboot/uefi/grubx64.efi }
-        - { src: workstation-post.yml, dest: /var/www/html/f36-inst.local/plays/workstation-post.yml }
-        - { src: networkminer.png, dest: /var/www/html/f36-inst.local/other/networkminer.png }
-        - { src: wallpapers, dest: /var/www/html/f36-inst.local/ }
+        - { src: workstation-post.yml, dest: "/var/www/html/f{{ version }}-inst.local/plays/workstation-post.yml" }
+        - { src: networkminer.png, dest: "/var/www/html/f{{ version }}-inst.local/other/networkminer.png" }
+        - { src: wallpapers, dest: "/var/www/html/f{{ version }}-inst.local/" }
 
       
     - name: Download Required Install Files
@@ -50,11 +52,11 @@
         url: "{{ item.src }}"
         dest: "{{ item.dest }}"
       with_items:
-        - { src: https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/images/pxeboot/vmlinuz, dest: /var/www/html/f36-inst.local/images/pxeboot/vmlinuz }
-        - { src: https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/images/pxeboot/initrd.img, dest: /var/www/html/f36-inst.local/images/pxeboot/initrd.img }
-        - { src: https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/images/install.img, dest: /var/www/html/f36-inst.local/images/install.img }
-        - { src: https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/.treeinfo, dest: /var/www/html/f36-inst.local/.treeinfo }
-        - { src: https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/.discinfo, dest: /var/www/html/f36-inst.local/.discinfo }
+        - { src: "https://download.fedoraproject.org/pub/fedora/linux/releases/{{ version }}/Everything/x86_64/os/images/pxeboot/vmlinuz", dest: "/var/www/html/f{{ version }}-inst.local/images/pxeboot/vmlinuz" }
+        - { src: "https://download.fedoraproject.org/pub/fedora/linux/releases/{{ version }}/Everything/x86_64/os/images/pxeboot/initrd.img", dest: "/var/www/html/f{{ version }}-inst.local/images/pxeboot/initrd.img" }
+        - { src: "https://download.fedoraproject.org/pub/fedora/linux/releases/{{ version }}/Everything/x86_64/os/images/install.img", dest: "/var/www/html/f{{ version }}-inst.local/images/install.img" }
+        - { src: "https://download.fedoraproject.org/pub/fedora/linux/releases/{{ version }}/Everything/x86_64/os/.treeinfo", dest: "/var/www/html/f{{ version }}-inst.local/.treeinfo" }
+        - { src: "https://download.fedoraproject.org/pub/fedora/linux/releases/{{ version }}/Everything/x86_64/os/.discinfo", dest: "/var/www/html/f{{ version }}-inst.local/.discinfo" }
 
     - name: Copy Template Files
       ansible.builtin.template:
@@ -64,7 +66,7 @@
         - { src: dhcpd.conf, dest: /etc/dhcp/dhcpd.conf }
         - { src: default, dest: /var/lib/tftpboot/bios/pxelinux.cfg/default }
         - { src: grub.cfg, dest: /var/lib/tftpboot/uefi/grub.cfg }
-        - { src: basic-workstation.ks, dest: /var/www/html/f36-inst.local/ks/basic-workstation.ks }
+        - { src: basic-workstation.ks, dest: "/var/www/html/f{{ version }}-inst.local/ks/basic-workstation.ks" }
 
     - name: Open Required Ports in Firewall
       ansible.builtin.firewalld:
@@ -89,15 +91,15 @@
 
     - name: Write Local Install Repo File
       ansible.builtin.copy:
-        dest: /etc/yum.repos.d/f36-inst.local.repo
+        dest: "/etc/yum.repos.d/f{{ version }}-inst.local.repo"
         content: |
-          [f36-inst.local]
-          name=Fedora 36 Local Install Repo
-          baseurl=https://download.fedoraproject.org/pub/fedora/linux/releases/36/Everything/x86_64/os/
+          [f{{ version }}-inst.local]
+          name=Fedora {{ version }} Local Install Repo
+          baseurl=https://download.fedoraproject.org/pub/fedora/linux/releases/{{ version }}/Everything/x86_64/os/
           enabled=1
           gpgcheck=0
 
     - name: Sync Local Install Repo (this will take A WHILE)
       ansible.builtin.shell:
-        cmd: dnf reposync -a noarch -a x86_64 --delete --download-metadata --download-path /var/www/html/ --repoid f36-inst.local
+        cmd: "dnf reposync -a noarch -a x86_64 --delete --download-metadata --download-path /var/www/html/ --repoid f{{ version }}-inst.local"
   
