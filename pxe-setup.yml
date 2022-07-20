@@ -80,7 +80,7 @@
     - name: Write Automatic Menu Templates
       ansible.builtin.template:
         src: "{{ item.src }}"
-        dest: "{{ item.dest }}.new"
+        dest: "{{ item.dest }}"
       with_items:
         - { src: default-automenu, dest: /var/lib/tftpboot/bios/pxelinux.cfg/default }
         - { src: grub-automenu.cfg, dest: /var/lib/tftpboot/uefi/grub.cfg }
