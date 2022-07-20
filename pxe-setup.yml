@@ -58,12 +58,13 @@
         - { src: "https://download.fedoraproject.org/pub/fedora/linux/releases/{{ version }}/Everything/x86_64/os/.treeinfo", dest: "/var/www/html/f{{ version }}-inst.local/.treeinfo" }
         - { src: "https://download.fedoraproject.org/pub/fedora/linux/releases/{{ version }}/Everything/x86_64/os/.discinfo", dest: "/var/www/html/f{{ version }}-inst.local/.discinfo" }
 
-    - name: Get HTML Directories
+    - name: Get Kickstart File Listing
       ansible.builtin.find:
         path: /var/www/html
-        pattern: "*"
-        file_type: directory
-      register: html_dirs
+        pattern: "*.ks"
+        file_type: file
+        recurse: yes
+      register: kickstarts
 
     - name: Test grub-automenu.cfg Template
       ansible.builtin.template:
