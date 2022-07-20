@@ -134,9 +134,11 @@
         content: |
           [org/gnome/desktop/background]
           picture-uri='file:///usr/share/backgrounds/wallpapers/low-poly-raven.png'
+          picture-uri-dark='file:///usr/share/backgrounds/wallpapers/low-poly-raven.png'
           picture-options='zoom'
           primary-color='000000'
           secondary-color='FFFFFF'
+          show-desktop-icons="true"
 
     - name: Add Window Buttons (maximize, minimize)
       ansible.builtin.copy:
