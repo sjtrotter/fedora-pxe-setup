@@ -152,6 +152,13 @@
           [org/gnome/desktop/interface]
           color-scheme='prefer-dark'
 
+    - name: Get Wallpapers
+      ansible.builtin.find:
+        patterns: "*.png"
+        paths: "/usr/share/backgrounds/wallpapers"
+        recurse: yes
+      register: wallpapers
+
     - name: Template Wallpaper XML
       ansible.builtin.copy:
         dest: "{{ item.dest }}"
@@ -170,13 +177,13 @@
             </wallpaper>
           </wallpapers>
       with_items:
-        - { name: "{{ wallpaperitem.path.split('/')[-1] }}", dest: "/usr/share/gnome-background-properties/{{ wallpaperitem.path.split('/')[-1].split('.')[0] }}.xml" }
+        - { name: "{{ wallpaper.path.split('/')[-1] }}", dest: "/usr/share/gnome-background-properties/{{ wallpaper.path.split('/')[-1].split('.')[0] }}.xml" }
 #        - { name: 3-eyed-raven.png, dest: /usr/share/gnome-background-properties/3-eyed-raven.xml }
 #        - { name: flight-on-raven.png, dest: /usr/share/gnome-background-properties/flight-on-raven.xml }
 #        - { name: whispy-raven.png, dest: /usr/share/gnome-background-properties/whispy-raven.xml }
-      loop: "{{ wallpaper.files }}"
+      loop: "{{ wallpapers.files }}"
       loop_control:
-        loop_var: wallpaperitem
+        loop_var: wallpaper
 
     - name: Update dconf
       ansible.builtin.shell:
