@@ -159,19 +159,6 @@
         recurse: yes
       register: wallpapers
 
-    # - name: Set Wallpaper Template Dict
-    #   ansible.builtin.set_fact:
-    #     wallpaperlist:
-    #       - "{{ item }}":
-    #         name: "{{ item.path.split('/')[-1] }}"
-    #         dest: "/usr/share/gnome-background-properties/{{ item.path.split('/')[-1].split('.')[0] }}.xml"
-    #   loop:
-    #     "{{ wallpapers.files }}"
-
-    # - name: debug dict slash List
-    #   ansible.builtin.debug:
-    #     msg: "{{ wallpaperlist }}"
-
     - name: Template Wallpaper XML
       ansible.builtin.copy:
         dest: "/usr/share/gnome-background-properties/{{ item.path.split('/')[-1].split('.')[0] }}.xml"
@@ -191,13 +178,6 @@
           </wallpapers>
       loop:
         "{{ wallpapers.files }}"
-#        - { name: "{{ wallpaper.path.split('/')[-1] }}", dest: "/usr/share/gnome-background-properties/{{ wallpaper.path.split('/')[-1].split('.')[0] }}.xml" }
-#        - { name: 3-eyed-raven.png, dest: /usr/share/gnome-background-properties/3-eyed-raven.xml }
-#        - { name: flight-on-raven.png, dest: /usr/share/gnome-background-properties/flight-on-raven.xml }
-#        - { name: whispy-raven.png, dest: /usr/share/gnome-background-properties/whispy-raven.xml }
-#      loop: "{{ wallpapers.files }}"
-#      loop_control:
-#        loop_var: wallpaper
 
     - name: Update dconf
       ansible.builtin.shell:
