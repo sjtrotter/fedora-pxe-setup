@@ -106,6 +106,13 @@
           enabled=1
           gpgcheck=0
 
+    - name: Get HTML Directories
+      ansible.builtin.find:
+        pattern: "*"
+        path: /var/www/html
+        type: directory
+      register: html_dirs
+
     - name: Remove Earlier Versions Repo
       ansible.builtin.file:
         path: "/var/www/html/f{{ version - 2 | int }}-inst.local"
