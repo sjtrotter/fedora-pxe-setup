@@ -62,7 +62,7 @@
       ansible.builtin.find:
         path: /var/www/html
         pattern: "*"
-        type: directory
+        file_type: directory
       register: html_dirs
 
     - name: Test grub-automenu.cfg Template
