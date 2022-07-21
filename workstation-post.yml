@@ -128,6 +128,7 @@
     - name: Download Horizon Client
       ansible.builtin.get_url:
         url: https://download3.vmware.com/software/CART23FQ2_LIN64_2206/VMware-Horizon-Client-2206-8.6.0-20094634.x64.bundle
+        dest: VMware-Horizon-Client-2206-8.6.0-20094634.x64.bundle
     
     - name: Install Horizon Client
       ansible.builtin.shell:
