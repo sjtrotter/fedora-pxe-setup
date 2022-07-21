@@ -122,6 +122,8 @@
           - Volatility
           - avml
           - gcc
+          - opensc
+          - openssl
           # - powershell
         state: latest
         enablerepo: google-chrome,code #,powershell
@@ -134,6 +136,40 @@
     - name: Install Horizon Client
       ansible.builtin.shell:
         cmd: 'printf "no\nno\n" | bash VMware-Horizon-Client-2206-8.6.0-20094634.x64.bundle --console --required --eulas-agreed --stop-services'
+
+    - name: Make Directory for SmartCard Support
+      ansible.builtin.file:
+        state: directory
+        path: /usr/lib/vmware/view/pkcs11
+
+    - name: Link pkcs11 For SmartCard Support
+      ansible.builtin.file:
+        state: link
+        src: /usr/lib64/pkcs11/opensc-pkcs11.so
+        path: /usr/lib/vmware/view/pkcs11/libpkcs11.so
+
+    - name: Download DoD Certs
+      ansible.builtin.get_url:
+        url: https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/unclass-certificates_pkcs7_v5-6_dod.zip
+        dest: '.'
+
+    - name: Unzip Certs
+      ansible.builtin.unarchive:
+        src: unclass-certificates_pkcs7_v5-6_dod.zip
+        dest: '.'
+
+    - name: Convert Certs to pem
+      ansible.builtin.shell:
+        cmd: openssl pkcs7 -in Certificates_PKCS7_v5.6_DoD/Certificates_PKCS7_v5.6_DoD.pem.p7b -print_certs -out DoD_CAs.pem
+
+    - name: Copy Certs to etc
+      ansible.builtin.copy:
+        src: DoD_CAs.pem
+        dest: /etc/pki/ca-trust/source/anchors
+
+    - name: Update CA Trust
+      ansible.builtin.shell:
+        cmd: update-ca-trust
 
     - name: Write User Profile for Extensions
       ansible.builtin.copy:
@@ -175,7 +211,7 @@
         content: |
           [org/gnome/desktop/interface]
           color-scheme='prefer-dark'
-          gtk-theme='Adwaita-dark'
+          # gtk-theme='Adwaita-dark'
 
     - name: Get Wallpapers
       ansible.builtin.find:
