@@ -121,6 +121,7 @@
           - autopsy
           - Volatility
           - avml
+          - gcc
           # - powershell
         state: latest
         enablerepo: google-chrome,code #,powershell
