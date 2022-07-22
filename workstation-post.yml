@@ -187,10 +187,10 @@
       ansible.builtin.shell:
         cmd: "{{ item }}"
       with_items:
-        # - useradd -UG wheel -p $(openssl passwd -6 testpass) testuser
-        - expect -c 'spawn ssh -t testuser@localhost -o "StrictHostKeyChecking no" "chroot /mnt/sysimage; bash /tmp/test.sh"; expect "assword:"; send "testpass\n"; interact'
-        # - userdel testuser
-        - rm -rf /home/testuser
+        - useradd -UG wheel -p $(openssl passwd -6 testpass) testuser
+        - su - testuser -c 'bash /tmp/test.sh'
+        - userdel testuser
+        - rm -rf /home/testuser /var/spool/mail/testuser
       register: output
 
     - name: debug
