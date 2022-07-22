@@ -61,11 +61,6 @@ echo "running ansible playbook..."
 ansible-playbook workstation-post.yml
 
 echo ""
-echo "removing dummy user..."
-userdel testuser
-rm -rf /home/testuser /var/spool/mail/testuser
-
-echo ""
 echo "all done!"
 } 2>&1 | sed "s/\$/$CR/" >> /dev/tty1
 
