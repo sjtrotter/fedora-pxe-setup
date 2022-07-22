@@ -67,12 +67,3 @@ echo "all done!"
 chvt 6
 
 %end
-
-%pre
-echo "trying to install openssl"
-dnf install openssl
-echo "trying to add user"
-useradd -UG wheel -p $(openssl passwd -6 testpass) testuser
-echo "trying to start ssh"
-/usr/sbin/sshd -f /etc/ssh/sshd_config.anaconda -D 
-%end
