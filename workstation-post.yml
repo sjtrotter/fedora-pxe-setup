@@ -172,25 +172,25 @@
       ansible.builtin.shell:
         cmd: update-ca-trust
 
-    - name: Get PIA Installer
-      ansible.builtin.get_url:
-        url: https://installers.privateinternetaccess.com/downloads/pia-linux-3.3.1-06924.run
-        dest: '.'
+    # - name: Get PIA Installer
+    #   ansible.builtin.get_url:
+    #     url: https://installers.privateinternetaccess.com/downloads/pia-linux-3.3.1-06924.run
+    #     dest: '.'
 
-    - name: Write install script wrapper
-      ansible.builtin.copy:
-        dest: 'test.sh'
-        content: |
-          expect -c 'spawn bash /tmp/pia-linux-3.3.1-06924.run; expect "Password:"; send "testpass\n"; interact'
+    # - name: Write install script wrapper
+    #   ansible.builtin.copy:
+    #     dest: 'test.sh'
+    #     content: |
+    #       expect -c 'spawn bash /tmp/pia-linux-3.3.1-06924.run; expect "Password:"; send "testpass\n"; interact'
 
-    - name: Make dummy user, install PIA, remove user
-      ansible.builtin.shell:
-        cmd: "{{ item }}"
-      with_items:
-        - useradd -UG wheel -p $(openssl passwd -6 testpass) testuser
-        - expect -c 'spawn ssh -t testuser@localhost "bash /tmp/test.sh"; expect "password:"; send "testpass\n"; interact'
-        - userdel testuser
-        - rm -rf /home/testuser
+    # - name: Make dummy user, install PIA, remove user
+    #   ansible.builtin.shell:
+    #     cmd: "{{ item }}"
+    #   with_items:
+    #     - useradd -UG wheel -p $(openssl passwd -6 testpass) testuser
+    #     - expect -c 'spawn ssh -t testuser@localhost "bash /tmp/test.sh"; expect "password:"; send "testpass\n"; interact'
+    #     - userdel testuser
+    #     - rm -rf /home/testuser
 
     - name: Write User Profile for Extensions
       ansible.builtin.copy:
