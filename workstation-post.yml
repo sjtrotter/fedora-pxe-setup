@@ -200,6 +200,7 @@
         ansible_become_pass: testpass
       ansible.builtin.shell:
         cmd: bash /tmp/test.sh
+      register: output
 
     - name: debug
       ansible.builtin.debug:
