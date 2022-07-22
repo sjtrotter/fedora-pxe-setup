@@ -183,19 +183,26 @@
         content: |
           expect -c 'spawn bash /tmp/pia-linux-3.3.1-06924.run; expect "Password:"; send "testpass\n"; interact'
 
-    - name: Make dummy user, install PIA, remove user
+    - name: Make dummy user, install PIA
       ansible.builtin.shell:
         cmd: "{{ item }}"
       with_items:
         - useradd -UG wheel -p $(openssl passwd -6 testpass) testuser
         - su - testuser -c 'bash /tmp/test.sh'
-        - userdel testuser
-        - rm -rf /home/testuser /var/spool/mail/testuser
+        # - userdel testuser
+        # - rm -rf /home/testuser /var/spool/mail/testuser
       register: output
 
     - name: debug
       ansible.builtin.debug:
         msg: "{{ output }}"
+
+    - name: Remove dummy user
+      ansible.builtin.shell:
+        cmd: "{{ item }}"
+      with_items:
+        - userdel testuser
+        - rm -rf /home/testuser /var/spool/mail/testuser
 
     # - name: Write User Profile for Extensions
     #   ansible.builtin.copy:
