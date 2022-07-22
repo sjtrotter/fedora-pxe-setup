@@ -188,10 +188,18 @@
         cmd: "{{ item }}"
       with_items:
         - useradd -UG wheel -p $(openssl passwd -6 testpass) testuser
-        - su - testuser -c 'bash /tmp/test.sh'
+        # - su - testuser -c 'bash /tmp/test.sh'
         # - userdel testuser
         # - rm -rf /home/testuser /var/spool/mail/testuser
-      register: output
+      # register: output
+
+    - name: try running installer with ansible become
+      become: true
+      become_user: testuser
+      vars:
+        ansible_become_pass: testpass
+      ansible.builtin.shell:
+        cmd: bash /tmp/test.sh
 
     - name: debug
       ansible.builtin.debug:
