@@ -189,8 +189,13 @@
       with_items:
         # - useradd -UG wheel -p $(openssl passwd -6 testpass) testuser
         - expect -c 'spawn ssh -t testuser@localhost -o "StrictHostKeyChecking no" "chroot /mnt/sysimage; bash /tmp/test.sh"; expect "assword:"; send "testpass\n"; interact'
-        - userdel testuser
+        # - userdel testuser
         - rm -rf /home/testuser
+      register: output
+
+    - name: debug
+      ansible.builtin.debug:
+        msg: "{{ output }}"
 
     - name: Write User Profile for Extensions
       ansible.builtin.copy:
