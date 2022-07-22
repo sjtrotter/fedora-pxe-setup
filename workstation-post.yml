@@ -197,6 +197,11 @@
       ansible.builtin.debug:
         msg: "{{ output }}"
 
+    - name: Wait for installer to finish
+      ansible.builtin.wait_for:
+        path: /usr/share/applications/piavpn.desktop
+        state: present
+
     - name: Remove dummy user
       ansible.builtin.shell:
         cmd: "{{ item }}"
