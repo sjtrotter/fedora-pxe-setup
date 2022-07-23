@@ -287,9 +287,14 @@
       ansible.builtin.dnf:
         name:
           - fedora-chromium-config
+          # - gnome-tour
         state: absent
         autoremove: yes
 
     - name: Run dnf clean all
       ansible.builtin.shell:
         cmd: dnf clean all
+
+    - name: Remove VMware Chrome Policy
+      ansible.builtin.shell:
+        cmd: rm /etc/opt/chrome/policies/managed/vmware-urlAllowlist.json
