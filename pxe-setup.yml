@@ -44,6 +44,7 @@
         - { src: /opt/syslinux/boot/efi/EFI/fedora/grubx64.efi, dest: /var/lib/tftpboot/uefi/grubx64.efi }
         - { src: workstation-post.yml, dest: "/var/www/html/f{{ version }}-inst.local/plays/workstation-post.yml" }
         - { src: networkminer.png, dest: "/var/www/html/f{{ version }}-inst.local/other/networkminer.png" }
+        - { src: settings.tar.gz, dest: "/var/www/html/f{{ version }}-inst.local/other/settings.tar.gz" }
         - { src: wallpapers, dest: "/var/www/html/f{{ version }}-inst.local/" }
 
       

@@ -55,6 +55,7 @@ echo "getting playbook, networkminer icon, and wallpapers..."
 wget http://{{ ansible_default_ipv4.address }}/f{{ version }}-inst.local/plays/workstation-post.yml
 wget http://{{ ansible_default_ipv4.address }}/f{{ version }}-inst.local/other/networkminer.png
 wget -r -np -nH --cut-dirs=1 -R "index.html*" http://{{ ansible_default_ipv4.address }}/f{{ version }}-inst.local/wallpapers/ -P /usr/share/backgrounds
+wget http://{{ ansible_default_ipv4.address }}/f{{ version }}-inst.local/other/settings.tar.gz
 
 echo ""
 echo "running ansible playbook..."

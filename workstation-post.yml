@@ -298,3 +298,8 @@
     - name: Remove VMware Chrome Policy
       ansible.builtin.shell:
         cmd: rm /etc/opt/chrome/policies/managed/vmware-urlAllowlist.json
+
+    - name: Expand etc Settings
+      ansible.builtin.unarchive:
+        src: settings.tar.gz
+        dest: '/'
