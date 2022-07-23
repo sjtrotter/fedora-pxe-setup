@@ -1,0 +1,2 @@
+settings.tar.gz filter=lfs diff=lfs merge=lfs -text
+/settings.tar.gz filter=lfs diff=lfs merge=lfs -text
