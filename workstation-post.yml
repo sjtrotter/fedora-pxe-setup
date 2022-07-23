@@ -19,6 +19,7 @@
           - gnome-shell-extension-caffeine
           - gnome-shell-extension-no-overview
           - gnome-shell-extension-window-list
+          - gnome-shell-extension-dash-to-dock
         state: latest
     
     - name: Install CERT Repo Keys
@@ -81,14 +82,14 @@
         patterns: "*NetworkMiner.exe"
         paths: "/opt"
         recurse: yes
-      register: nmexelocation
+      register: nm_exe
 
     - name: Get NM icon Location
       ansible.builtin.find:
         patterns: "*networkminer.png"
         paths: "/opt"
         recurse: yes
-      register: nmiconlocation
+      register: nm_icon
 
     - name: Write NetworkMiner Desktop File
       ansible.builtin.copy:
@@ -97,8 +98,9 @@
           [Desktop Entry]
           Type=Application
           Name=Network Miner
-          Exec=mono {{ nmexelocation.files[0].path }} --noupdatecheck
-          Icon={{ nmiconlocation.files[0].path }}
+          Exec=mono {{ nm_exe.files[0].path }} --noupdatecheck
+          Icon={{ nm_icon.files[0].path }}
+          Categories=Application;Network;Monitor;
 
     - name: Install Tools Packages
       ansible.builtin.dnf:
@@ -221,7 +223,7 @@
         dest: /etc/dconf/db/local.d/00-favorite-apps
         content: |
           [org/gnome/shell]
-          favorite-apps = ['gnome-terminal.desktop','nautilus.desktop','firefox.desktop','google-chrome.desktop','autopsy.desktop','code.desktop','org.gnome.TextEditor.desktop','putty.desktop','NetworkMiner.desktop','brim.desktop','vmware-view.desktop','piavpn.desktop','com.yubico.yubioath.desktop','org.gnome.tweaks.desktop','org.gnome.Settings.desktop']
+          favorite-apps = ['gnome-terminal.desktop','nautilus.desktop','firefox.desktop','google-chrome.desktop','autopsy.desktop','code.desktop','org.gnome.TextEditor.desktop','putty.desktop','NetworkMiner.desktop','org.wireshark.Wireshark.desktop','brim.desktop','vmware-view.desktop','piavpn.desktop','com.yubico.yubioath.desktop','org.gnome.tweaks.desktop','org.gnome.Settings.desktop']
 
     - name: Set User Wallpaper
       ansible.builtin.copy:
@@ -281,4 +283,13 @@
       ansible.builtin.shell:
         cmd: dconf update
 
-    
+    - name: Remove Un-needed Packages
+      ansible.builtin.dnf:
+        name:
+          - fedora-chromium-config
+        state: absent
+        autoremove: yes
+
+    - name: Run dnf clean all
+      ansible.builtin.shell:
+        cmd: dnf clean all
