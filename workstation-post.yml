@@ -291,9 +291,9 @@
         state: absent
         autoremove: yes
 
-    - name: Run dnf clean all
-      ansible.builtin.shell:
-        cmd: dnf clean all
+    # - name: Run dnf clean all
+    #   ansible.builtin.shell:
+    #     cmd: dnf clean all
 
     - name: Remove VMware Chrome Policy
       ansible.builtin.shell:
