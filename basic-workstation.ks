@@ -33,7 +33,7 @@ autopart --encrypted --passphrase workstation
 clearpart --initlabel --all
 
 # System timezone
-timezone America/Chicago --utc
+timezone Etc/UTC --utc
 
 #Root password
 rootpw --lock
