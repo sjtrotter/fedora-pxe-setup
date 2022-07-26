@@ -139,14 +139,19 @@
         state: latest
         enablerepo: google-chrome,code #,powershell
 
+    - name: Get Pidgin Rocketchat Plugin
+      ansible.builtin.git:
+        repo: https://github.com/EionRobb/purple-rocketchat
+        dest: /tmp/
+
+    - name: Make Pidgin Rocketchat Plugin
+      ansible.builtin.make:
+        chdir: purple-rocketchat
+
     - name: Install Pidgin Rocketchat Plugin
-      ansible.builtin.shell:
-        cmd: "{{ item }}"
-      with_items:
-        - git clone https://github.com/EionRobb/purple-rocketchat
-        - cd purple-rocketchat
-        - make
-        - make install
+      ansible.builtin.make:
+        chdir: purple-rocketchat
+        target: install
 
     - name: Download Horizon Client
       ansible.builtin.get_url:
