@@ -240,7 +240,7 @@
         dest: /etc/dconf/db/local.d/00-favorite-apps
         content: |
           [org/gnome/shell]
-          favorite-apps = ['gnome-terminal.desktop','nautilus.desktop','firefox.desktop','google-chrome.desktop','autopsy.desktop','code.desktop','org.gnome.TextEditor.desktop','putty.desktop','NetworkMiner.desktop','org.wireshark.Wireshark.desktop','brim.desktop','vmware-view.desktop','piavpn.desktop','com.yubico.yubioath.desktop','org.gnome.tweaks.desktop','org.gnome.Settings.desktop']
+          favorite-apps = ['gnome-terminal.desktop','nautilus.desktop','firefox.desktop','google-chrome.desktop','pidgin.desktop','autopsy.desktop','code.desktop','org.gnome.TextEditor.desktop','putty.desktop','NetworkMiner.desktop','org.wireshark.Wireshark.desktop','brim.desktop','vmware-view.desktop','piavpn.desktop','com.yubico.yubioath.desktop','org.gnome.tweaks.desktop','org.gnome.Settings.desktop']
 
     - name: Set User Wallpaper
       ansible.builtin.copy:
