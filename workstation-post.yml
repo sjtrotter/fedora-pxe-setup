@@ -223,10 +223,7 @@
 
     - name: Kill PIA Process
       ansible.builtin.shell:
-        cmd: "{{ item }}"
-      with_items:
-        - PIA_PID=$(ps -ef | grep -v grep | grep pia | awk '{print $2}')
-        - if [[ $PIA_PID ]]; then kill -9 $PIA_PID; fi
+        cmd: "PIA_PID=$(ps -ef | grep -v grep | grep pia | awk '{print $2}'); if [[ $PIA_PID ]]; then kill -9 $PIA_PID; fi"
 
     - name: Remove dummy user
       ansible.builtin.shell:
