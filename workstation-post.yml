@@ -142,7 +142,7 @@
     - name: Get Pidgin Rocketchat Plugin
       ansible.builtin.git:
         repo: https://github.com/EionRobb/purple-rocketchat
-        dest: /tmp/
+        dest: /tmp/purple-rocketchat
 
     - name: Make Pidgin Rocketchat Plugin
       ansible.builtin.make:
