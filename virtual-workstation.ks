@@ -60,7 +60,7 @@ wget http://{{ ansible_default_ipv4.address }}/f{{ version }}-inst.local/other/s
 
 echo ""
 echo "running ansible playbook..."
-ansible-playbook workstation-post.yml
+ansible-playbook virtual-post.yml
 
 echo ""
 echo "all done!"
