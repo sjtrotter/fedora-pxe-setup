@@ -43,6 +43,7 @@
         - { src: /opt/syslinux/boot/efi/EFI/fedora/shimx64.efi, dest: /var/lib/tftpboot/uefi/shimx64.efi }
         - { src: /opt/syslinux/boot/efi/EFI/fedora/grubx64.efi, dest: /var/lib/tftpboot/uefi/grubx64.efi }
         - { src: workstation-post.yml, dest: "/var/www/html/f{{ version }}-inst.local/plays/workstation-post.yml" }
+        - { src: virtual-post.yml, dest: "/var/www/html/f{{ version }}-inst.local/plays/virtual-post.yml" }
         - { src: networkminer.png, dest: "/var/www/html/f{{ version }}-inst.local/other/networkminer.png" }
         - { src: settings.tar.gz, dest: "/var/www/html/f{{ version }}-inst.local/other/settings.tar.gz" }
         - { src: wallpapers, dest: "/var/www/html/f{{ version }}-inst.local/" }
@@ -69,6 +70,7 @@
 #        - { src: grub.cfg, dest: /var/lib/tftpboot/uefi/grub.cfg }
         - { src: basic-workstation.ks, dest: "/var/www/html/f{{ version }}-inst.local/ks/fedora-{{ version }}-basic-workstation.ks" }
         - { src: manual-install.ks, dest: "/var/www/html/f{{ version }}-inst.local/ks/fedora-{{ version }}-manual-install.ks" }
+        - { src: virtual-workstation.ks, dest: "/var/www/html/f{{ version }}-inst.local/ks/fedora-{{ version }}-virtual-workstation.ks" }
 
     - name: Get Kickstart File Listing
       ansible.builtin.find:
