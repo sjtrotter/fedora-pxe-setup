@@ -144,7 +144,6 @@
         - { mode: "go+w", state: directory, recurse: yes, path: "{{ nm_path }}/AssembledFiles" }
         - { mode: "go+w", state: directory, recurse: yes, path: "{{ nm_path }}/Captures" }
 
-
     - name: Update All (except kernel)
       ansible.builtin.dnf:
         name: "{{ item.name }}"
@@ -157,69 +156,6 @@
         - { name: "gnome-extensions-app,gnome-tweaks,gnome-shell-extension-frippery-applications-menu,gnome-shell-extension-apps-menu,gnome-shell-extension-caffeine,gnome-shell-extension-no-overview,gnome-shell-extension-window-list,gnome-shell-extension-dash-to-dock,https://forensics.cert.org/cert-forensics-tools-release-36.rpm,fedora-workstation-repositories", state: "latest", exclude: "", enablerepo: "", autoremove: no }
         - { name: "mono-devel,net-tools,nmap,putty,screen,suricata,tcpdump,tcpreplay,wireshark,yara,yubioath-desktop,google-chrome-stable,code,brim,zeek,autopsy,Volatility,avml,gcc,opensc,openssl,expect,remmina,pidgin,gnome-shell-extension-pidgin,libpurple-devel,libmarkdown-devel,json-glib-devel,glib2,git", state: latest, exclude: "", enablerepo: "google-chrome,code", autoremove: no }  # - powershell #,powershell
         - { name: "fedora-chromium-config", state: "absent", exclude: "", enablerepo: "", autoremove: yes }
-    # - name: Install Desktop Tweaks
-    #   ansible.builtin.dnf:
-    #     name:
-    #       - gnome-extensions-app
-    #       - gnome-tweaks
-    #       - gnome-shell-extension-frippery-applications-menu
-    #       - gnome-shell-extension-apps-menu
-    #       - gnome-shell-extension-caffeine
-    #       - gnome-shell-extension-no-overview
-    #       - gnome-shell-extension-window-list
-    #       - gnome-shell-extension-dash-to-dock
-    #     state: latest
-    
-    # - name: Install CERT Repo Keys
-    #   ansible.builtin.command:
-    #     cmd: "{{ item }}"
-    #   with_items:
-    #     - rpm --import https://forensics.cert.org/forensics.asc
-    #     - rpm --import https://www.cert.org/forensics/repository/forensics-expires-2022-04-03.asc
-
-    # - name: Install Other Repo RPMs
-    #   ansible.builtin.dnf:
-    #     name:
-    #       - https://forensics.cert.org/cert-forensics-tools-release-36.rpm
-    #       - fedora-workstation-repositories
-    #     state: installed
-
-    # - name: Install Tools Packages
-    #   ansible.builtin.dnf:
-    #     name:
-    #       - mono-devel
-    #       - net-tools
-    #       - nmap
-    #       - putty
-    #       - screen
-    #       - suricata
-    #       - tcpdump
-    #       - tcpreplay
-    #       - wireshark
-    #       - yara
-    #       - yubioath-desktop
-    #       - google-chrome-stable
-    #       - code
-    #       - brim
-    #       - zeek
-    #       - autopsy
-    #       - Volatility
-    #       - avml
-    #       - gcc
-    #       - opensc
-    #       - openssl
-    #       - expect
-    #       - remmina
-    #       - pidgin
-    #       - gnome-shell-extension-pidgin
-    #       - libpurple-devel
-    #       - libmarkdown-devel
-    #       - json-glib-devel
-    #       - glib2
-    #       - git
-    #       # - powershell
-    #     state: latest
-    #     enablerepo: google-chrome,code #,powershell
 
     - name: Run Ad-Hoc Commands - Convert/Move/Update CA, Install Horizon, dconf Update, Create PIA User
       ansible.builtin.shell:
@@ -246,10 +182,6 @@
         chdir: purple-rocketchat
         target: install
 
-    # - name: Install Horizon Client
-    #   ansible.builtin.shell:
-    #     cmd: 'printf "no\nno\n" | bash VMware-Horizon-Client-2206-8.6.0-20094634.x64.bundle --console --required --eulas-agreed --stop-services'
-
     - name: File Operations - SmartCard Support for Horizon, Remove Chrome Policy
       ansible.builtin.file:
         src: "{{ item.src }}"
@@ -259,22 +191,6 @@
         - { src: "", state: directory, path: /usr/lib/vmware/view/pkcs11 }
         - { src: /usr/lib64/pkcs11/opensc-pkcs11.so, state: link, path: /usr/lib/vmware/view/pkcs11/libpkcs11.so }
         - { src: "", state: absent, path: /etc/opt/chrome/policies/managed/vmware-urlAllowlist.json }
-
-    # - name: Link pkcs11 For SmartCard Support
-    #   ansible.builtin.file:
-    #     state: link
-    #     src: /usr/lib64/pkcs11/opensc-pkcs11.so
-    #     path: /usr/lib/vmware/view/pkcs11/libpkcs11.so
-
-    # - name: Update CA Trust
-    #   ansible.builtin.shell:
-    #     cmd: update-ca-trust
-
-    # - name: Make dummy user to install PIA
-    #   ansible.builtin.shell:
-    #     cmd: "{{ item }}"
-    #   with_items:
-    #     - useradd -UG wheel -p $(openssl passwd -6 testpass) testuser
 
     - name: Install PIA with dummy user
       become: true
@@ -289,25 +205,5 @@
         cmd: "{{ item }}"
       with_items:
         - "PIA_PID=$(ps -ef | grep -v grep | grep pia | awk '{print $2}'); if [[ $PIA_PID ]]; then kill -9 $PIA_PID; fi"
-    # - name: Remove dummy user
-    #   ansible.builtin.shell:
-    #     cmd: "{{ item }}"
-    #   with_items:
         - userdel testuser
         - rm -rf /home/testuser /var/spool/mail/testuser
-
-    # - name: Update dconf
-    #   ansible.builtin.shell:
-    #     cmd: dconf update
-
-    # - name: Remove Un-needed Packages
-    #   ansible.builtin.dnf:
-    #     name:
-    #       - fedora-chromium-config
-    #     state: absent
-    #     autoremove: yes
-
-
-    # - name: Remove VMware Chrome Policy
-    #   ansible.builtin.shell:
-    #     cmd: rm /etc/opt/chrome/policies/managed/vmware-urlAllowlist.json      
