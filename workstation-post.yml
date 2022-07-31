@@ -144,7 +144,7 @@
         - { mode: "go+w", state: directory, recurse: yes, path: "{{ nm_path }}/AssembledFiles" }
         - { mode: "go+w", state: directory, recurse: yes, path: "{{ nm_path }}/Captures" }
 
-    - name: Update All (except kernel)
+    - name: Update (except kernel), Install Tweaks and Tools, Remove Chrome Config
       ansible.builtin.dnf:
         name: "{{ item.name }}"
         state: "{{ item.state }}"
