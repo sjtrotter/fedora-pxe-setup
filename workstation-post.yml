@@ -94,7 +94,7 @@
     - name: Place Prebuilt Files
       ansible.builtin.copy:
         src: "{{ item.src }}"
-        dest: "{{ item.dst }}"
+        dest: "{{ item.dest }}"
       with_items:
         - { src: networkminer.png, dest: "{{ nm_path }}/networkminer.png" }
 
