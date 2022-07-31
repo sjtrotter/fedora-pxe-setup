@@ -67,7 +67,7 @@
           enabled-extensions=['apps-menu@gnome-shell-extensions.gcampax.github.com','caffeine@patapon.info','no-overview@fthx','places-menu@gnome-shell-extensions.gcampax.github.com','window-list@gnome-shell-extensions.gcampax.github.com']
         user_favorites: |
           [org/gnome/shell]
-          favorite-apps = ['gnome-terminal.desktop','nautilus.desktop','firefox.desktop','google-chrome.desktop','pidgin.desktop','autopsy.desktop','code.desktop','org.gnome.TextEditor.desktop','putty.desktop','NetworkMiner.desktop','org.wireshark.Wireshark.desktop','brim.desktop','remmina-gnome.desktop','vmware-view.desktop','piavpn.desktop','com.yubico.yubioath.desktop','org.gnome.tweaks.desktop','org.gnome.Settings.desktop']
+          favorite-apps = ['gnome-terminal.desktop','nautilus.desktop','firefox.desktop','google-chrome.desktop','pidgin.desktop','autopsy.desktop','code.desktop','org.gnome.TextEditor.desktop','putty.desktop','NetworkMiner.desktop','org.wireshark.Wireshark.desktop','brim.desktop','org.remmina.Remmina.desktop','vmware-view.desktop','piavpn.desktop','com.yubico.yubioath.desktop','org.gnome.tweaks.desktop','org.gnome.Settings.desktop']
         user_background: |
           [org/gnome/desktop/background]
           picture-uri='file:///usr/share/backgrounds/wallpapers/low-poly-raven.png'
