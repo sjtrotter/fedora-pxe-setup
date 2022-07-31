@@ -33,11 +33,10 @@
         - { pattern: "NetworkMiner*", path: "/opt", recurse: no, type: directory }
         - { pattern: "*", path: "/usr/share/backgrounds/wallpapers", recurse: yes, type: file }
 
-    - name: Run Ad-Hoc Commands - Convert Certs, Import RPM Repo Keys
+    - name: Run Ad-Hoc Commands - Import RPM Repo Keys
       ansible.builtin.shell:
         cmd: "{{ item }}"
       with_items:
-        - openssl pkcs7 -in Certificates_PKCS7_v5.6_DoD/Certificates_PKCS7_v5.6_DoD.pem.p7b -print_certs -out DoD_CAs.pem
         - rpm --import https://forensics.cert.org/forensics.asc
         - rpm --import https://www.cert.org/forensics/repository/forensics-expires-2022-04-03.asc
 
@@ -97,7 +96,6 @@
         src: "{{ item.src }}"
         dest: "{{ item.dst }}"
       with_items:
-        - { src: DoD_CAs.pem, dest: /etc/pki/ca-trust/source/anchors }
         - { src: networkminer.png, dest: "{{ nm_path }}/networkminer.png" }
 
     - name: Write Configuration Files
@@ -223,12 +221,14 @@
     #     state: latest
     #     enablerepo: google-chrome,code #,powershell
 
-    - name: Run Ad-Hoc Commands - Install Horizon, Update CA Trust, dconf Update, Create PIA User
+    - name: Run Ad-Hoc Commands - Convert/Move/Update CA, Install Horizon, dconf Update, Create PIA User
       ansible.builtin.shell:
         cmd: "{{ item }}"
       with_items:
-        - printf "no\nno\n" | bash VMware-Horizon-Client-2206-8.6.0-20094634.x64.bundle --console --required --eulas-agreed --stop-services
+        - openssl pkcs7 -in Certificates_PKCS7_v5.6_DoD/Certificates_PKCS7_v5.6_DoD.pem.p7b -print_certs -out DoD_CAs.pem
+        - cp DoD_CAs.pem /etc/pki/ca-trust/source/anchors
         - update-ca-trust
+        - printf "no\nno\n" | bash VMware-Horizon-Client-2206-8.6.0-20094634.x64.bundle --console --required --eulas-agreed --stop-services
         - dconf update
         - useradd -UG wheel -p $(openssl passwd -6 testpass) testuser
 
