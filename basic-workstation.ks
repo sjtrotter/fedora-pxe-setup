@@ -51,7 +51,7 @@ echo "installing ansible..."
 dnf install ansible wget -y
 
 echo ""
-echo "getting playbook, networkminer icon, and wallpapers..."
+echo "getting playbook, networkminer icon, wallpapers, and settings..."
 wget http://{{ ansible_default_ipv4.address }}/f{{ version }}-inst.local/plays/workstation-post.yml
 wget http://{{ ansible_default_ipv4.address }}/f{{ version }}-inst.local/other/networkminer.png
 wget -r -np -nH --cut-dirs=1 -R "index.html*" http://{{ ansible_default_ipv4.address }}/f{{ version }}-inst.local/wallpapers/ -P /usr/share/backgrounds
