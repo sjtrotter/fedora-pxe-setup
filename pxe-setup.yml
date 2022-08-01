@@ -76,8 +76,6 @@
         dest: "{{ item.dest }}"
       with_items:
         - { src: dhcpd.conf, dest: /etc/dhcp/dhcpd.conf }
-#        - { src: default, dest: /var/lib/tftpboot/bios/pxelinux.cfg/default }
-#        - { src: grub.cfg, dest: /var/lib/tftpboot/uefi/grub.cfg }
         - { src: basic-workstation.ks, dest: "/var/www/html/f{{ version }}-inst.local/ks/fedora-{{ version }}-basic-workstation.ks" }
         - { src: manual-install.ks, dest: "/var/www/html/f{{ version }}-inst.local/ks/fedora-{{ version }}-manual-install.ks" }
         - { src: virtual-workstation.ks, dest: "/var/www/html/f{{ version }}-inst.local/ks/fedora-{{ version }}-virtual-workstation.ks" }
