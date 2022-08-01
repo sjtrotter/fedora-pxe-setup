@@ -3,233 +3,72 @@
   become: true
   tasks:
 
-    - name: Update All (except kernel)
-      ansible.builtin.dnf:
-        name: "*"
-        state: latest
-        exclude: kernel-core,kernel-modules
+    - name: Download Installer Files
+      ansible.builtin.get_url:
+        url: "{{ item.url }}"
+        dest: "{{ item.dest }}"
+      with_items:
+        - { url: https://www.netresec.com/?download=NetworkMiner, dest: /tmp/nm.zip }
+        # - { url: https://download3.vmware.com/software/CART23FQ2_LIN64_2206/VMware-Horizon-Client-2206-8.6.0-20094634.x64.bundle, dest: '.' }
+        - { url: https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/unclass-certificates_pkcs7_v5-6_dod.zip, dest: '.' }
+        - { url: https://installers.privateinternetaccess.com/download/pia-linux-3.3.1-06924.run, dest: '.' }
 
-    - name: Install Desktop Tweaks
-      ansible.builtin.dnf:
-        name:
-          - gnome-extensions-app
-          - gnome-tweaks
-          - gnome-shell-extension-frippery-applications-menu
-          - gnome-shell-extension-apps-menu
-          - gnome-shell-extension-caffeine
-          - gnome-shell-extension-no-overview
-          - gnome-shell-extension-window-list
-          - gnome-shell-extension-dash-to-dock
-        state: latest
-    
-    - name: Install CERT Repo Keys
-      ansible.builtin.command:
+    - name: Extract Required Files
+      ansible.builtin.unarchive:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      with_items:
+        - { src: /tmp/nm.zip, dest: /opt }
+        - { src: unclass-certificates_pkcs7_v5-6_dod.zip, dest: '.' }
+        - { src: settings.tar.gz, dest: '/' }
+
+    - name: Get NM and Wallpaper Paths
+      ansible.builtin.find:
+        pattern: "{{ item.pattern }}"
+        path: "{{ item.path }}"
+        recurse: "{{ item.recurse }}"
+        file_type: "{{ item.type }}"
+      register: paths
+      with_items:
+        - { pattern: "NetworkMiner*", path: "/opt", recurse: no, type: directory }
+        - { pattern: "*", path: "/usr/share/backgrounds/wallpapers", recurse: yes, type: file }
+
+    - name: Run Ad-Hoc Commands - Import RPM Repo Keys
+      ansible.builtin.shell:
         cmd: "{{ item }}"
       with_items:
         - rpm --import https://forensics.cert.org/forensics.asc
         - rpm --import https://www.cert.org/forensics/repository/forensics-expires-2022-04-03.asc
 
-    - name: Install Other Repo RPMs
-      ansible.builtin.dnf:
-        name:
-          - https://forensics.cert.org/cert-forensics-tools-release-36.rpm
-          - fedora-workstation-repositories
-        state: installed
-
-    - name: Write vscode Repo
-      ansible.builtin.copy:
-        dest: /etc/yum.repos.d/vscode.repo
-        content: |
+    - name: Set Content and Files Variables
+      vars:
+        nm_path: "{{ paths.results[0].files[0].path }}"
+      ansible.builtin.set_fact:
+        nm_path: "{{ paths.results[0].files[0].path }}"
+        wallpapers: "{{ paths.results[1] }}"
+        nm_desktop_file: |
+          [Desktop Entry]
+          Type=Application
+          Name=Network Miner
+          Exec=mono {{ nm_path }}/NetworkMiner.exe --noupdatecheck
+          Icon={{ nm_path }}/networkminer.png
+          Categories=Application;Network;Monitor;
+        vscode_repo: |
           [code]
           name=Visual Studio Code
           baseurl=https://packages.microsoft.com/yumrepos/vscode
           enabled=0
           gpgcheck=1
           gpgkey=https://packages.microsoft.com/keys/microsoft.asc
-
-    # - name: Write PowerShell Repo
-    #   ansible.builtin.copy:
-    #     dest: /etc/yum.repos.d/microsoft.repo
-    #     content: |
-    #       [powershell]
-    #       name=PowerShell
-    #       baseurl=https://packages.microsoft.com/rhel/8/prod
-    #       enabled=0
-    #       gpgcheck=1
-    #       gpgkey=https://packages.microsoft.com/keys/microsoft.asc
-
-    - name: Get NetworkMiner Zip
-      ansible.builtin.get_url:
-        url: https://www.netresec.com/?download=NetworkMiner
-        dest: /tmp/nm.zip
-    
-    - name: Extract NetworkMiner
-      ansible.builtin.unarchive:
-        src: /tmp/nm.zip
-        dest: /opt
-
-    - name: chmod NetworkMiner Files
-      ansible.builtin.shell:
-        cmd: "{{ item }}"
-      with_items: 
-        - chmod +x /opt/NetworkMiner*/NetworkMiner.exe
-        - chmod -R go+w /opt/NetworkMiner*/AssembledFiles
-        - chmod -R go+w /opt/NetworkMiner*/Captures
-        - mv networkminer.png /opt/NetworkMiner*
-
-    - name: Get NM exe Location
-      ansible.builtin.find:
-        patterns: "*NetworkMiner.exe"
-        paths: "/opt"
-        recurse: yes
-      register: nm_exe
-
-    - name: Get NM icon Location
-      ansible.builtin.find:
-        patterns: "*networkminer.png"
-        paths: "/opt"
-        recurse: yes
-      register: nm_icon
-
-    - name: Write NetworkMiner Desktop File
-      ansible.builtin.copy:
-        dest: /usr/share/applications/NetworkMiner.desktop
-        content: |
-          [Desktop Entry]
-          Type=Application
-          Name=Network Miner
-          Exec=mono {{ nm_exe.files[0].path }} --noupdatecheck
-          Icon={{ nm_icon.files[0].path }}
-          Categories=Application;Network;Monitor;
-
-    - name: Install Tools Packages
-      ansible.builtin.dnf:
-        name:
-          - mono-devel
-          - net-tools
-          - nmap
-          - putty
-          - screen
-          - suricata
-          - tcpdump
-          - tcpreplay
-          - wireshark
-          - yara
-          # - yubioath-desktop
-          - google-chrome-stable
-          - code
-          - brim
-          - zeek
-          - autopsy
-          - Volatility
-          - avml
-          - gcc
-          - opensc
-          - openssl
-          - expect
-          - remmina
-          # - powershell
-        state: latest
-        enablerepo: google-chrome,code #,powershell
-
-    # - name: Download Horizon Client
-    #   ansible.builtin.get_url:
-    #     url: https://download3.vmware.com/software/CART23FQ2_LIN64_2206/VMware-Horizon-Client-2206-8.6.0-20094634.x64.bundle
-    #     dest: '.'
-    
-    # - name: Install Horizon Client
-    #   ansible.builtin.shell:
-    #     cmd: 'printf "no\nno\n" | bash VMware-Horizon-Client-2206-8.6.0-20094634.x64.bundle --console --required --eulas-agreed --stop-services'
-
-    # - name: Make Directory for SmartCard Support
-    #   ansible.builtin.file:
-    #     state: directory
-    #     path: /usr/lib/vmware/view/pkcs11
-
-    # - name: Link pkcs11 For SmartCard Support
-    #   ansible.builtin.file:
-    #     state: link
-    #     src: /usr/lib64/pkcs11/opensc-pkcs11.so
-    #     path: /usr/lib/vmware/view/pkcs11/libpkcs11.so
-
-    # - name: Download DoD Certs
-    #   ansible.builtin.get_url:
-    #     url: https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/unclass-certificates_pkcs7_v5-6_dod.zip
-    #     dest: '.'
-
-    # - name: Unzip Certs
-    #   ansible.builtin.unarchive:
-    #     src: unclass-certificates_pkcs7_v5-6_dod.zip
-    #     dest: '.'
-
-    # - name: Convert Certs to pem
-    #   ansible.builtin.shell:
-    #     cmd: openssl pkcs7 -in Certificates_PKCS7_v5.6_DoD/Certificates_PKCS7_v5.6_DoD.pem.p7b -print_certs -out DoD_CAs.pem
-
-    # - name: Copy Certs to etc
-    #   ansible.builtin.copy:
-    #     src: DoD_CAs.pem
-    #     dest: /etc/pki/ca-trust/source/anchors
-
-    # - name: Update CA Trust
-    #   ansible.builtin.shell:
-    #     cmd: update-ca-trust
-
-    # - name: Get PIA Installer
-    #   ansible.builtin.get_url:
-    #     url: https://installers.privateinternetaccess.com/download/pia-linux-3.3.1-06924.run
-    #     dest: '.'
-
-    # - name: Write install script wrapper
-    #   ansible.builtin.copy:
-    #     dest: 'test.sh'
-    #     content: |
-    #       expect -c 'spawn bash /tmp/pia-linux-3.3.1-06924.run; expect "Password:"; send "testpass\n"; interact'
-
-    # - name: Make dummy user to install PIA
-    #   ansible.builtin.shell:
-    #     cmd: "{{ item }}"
-    #   with_items:
-    #     - useradd -UG wheel -p $(openssl passwd -6 testpass) testuser
-
-    # - name: Install PIA with dummy user
-    #   become: true
-    #   become_user: testuser
-    #   vars:
-    #     ansible_become_pass: testpass
-    #   ansible.builtin.shell:
-    #     cmd: bash /tmp/test.sh
-
-    # - name: Kill PIA Process
-    #   ansible.builtin.shell:
-    #     cmd: "kill -9 $(ps -ef | grep -v grep | grep pia | awk '{print $2}')"
-
-    # - name: Remove dummy user
-    #   ansible.builtin.shell:
-    #     cmd: "{{ item }}"
-    #   with_items:
-    #     - userdel testuser
-    #     - rm -rf /home/testuser /var/spool/mail/testuser
-
-    - name: Write User Profile for Extensions
-      ansible.builtin.copy:
-        dest: /etc/dconf/db/local.d/00-extensions
-        content: |
+        pia_install_wrapper: |
+          expect -c 'spawn bash /tmp/pia-linux-3.3.1-06924.run; expect "Password:"; send "testpass\n"; interact'
+        shell_extensions: |
           [org/gnome/shell]
-          # List all extensions that you want to have enabled for all users
           enabled-extensions=['apps-menu@gnome-shell-extensions.gcampax.github.com','caffeine@patapon.info','no-overview@fthx','places-menu@gnome-shell-extensions.gcampax.github.com','window-list@gnome-shell-extensions.gcampax.github.com']
-
-    - name: Write User Favorite Apps
-      ansible.builtin.copy:
-        dest: /etc/dconf/db/local.d/00-favorite-apps
-        content: |
+        user_favorites: |
           [org/gnome/shell]
-          favorite-apps = ['gnome-terminal.desktop','nautilus.desktop','firefox.desktop','google-chrome.desktop','autopsy.desktop','code.desktop','org.gnome.TextEditor.desktop','putty.desktop','NetworkMiner.desktop','org.wireshark.Wireshark.desktop','brim.desktop','vmware-view.desktop','piavpn.desktop','com.yubico.yubioath.desktop','org.gnome.tweaks.desktop','org.gnome.Settings.desktop']
-
-    - name: Set User Wallpaper
-      ansible.builtin.copy:
-        dest: /etc/dconf/db/local.d/00-background
-        content: |
+          favorite-apps = ['gnome-terminal.desktop','nautilus.desktop','firefox.desktop','google-chrome.desktop','pidgin.desktop','autopsy.desktop','code.desktop','org.gnome.TextEditor.desktop','putty.desktop','NetworkMiner.desktop','org.wireshark.Wireshark.desktop','brim.desktop','org.remmina.Remmina.desktop','vmware-view.desktop','piavpn.desktop','com.yubico.yubioath.desktop','org.gnome.tweaks.desktop','org.gnome.Settings.desktop']
+        user_background: |
           [org/gnome/desktop/background]
           picture-uri='file:///usr/share/backgrounds/wallpapers/low-poly-raven.png'
           picture-uri-dark='file:///usr/share/backgrounds/wallpapers/low-poly-raven.png'
@@ -237,28 +76,42 @@
           primary-color='000000'
           secondary-color='FFFFFF'
           show-desktop-icons="true"
-
-    - name: Add Window Buttons (maximize, minimize)
-      ansible.builtin.copy:
-        dest: /etc/dconf/db/local.d/00-windowbuttons
-        content: |
+        window_buttons: |
           [org/gnome/desktop/wm/preferences]
           button-layout='appmenu:minimize,maximize,close'
-
-    - name: Set Dark Mode
-      ansible.builtin.copy:
-        dest: /etc/dconf/db/local.d/00-darkmode
-        content: |
+        dark_mode: |
           [org/gnome/desktop/interface]
           color-scheme='prefer-dark'
-          # gtk-theme='Adwaita-dark' # Can't use this due to Horizon (?)
+          gtk-theme='Adwaita-dark'
+    #     powershell_repo: |
+    #       [powershell]
+    #       name=PowerShell
+    #       baseurl=https://packages.microsoft.com/rhel/8/prod
+    #       enabled=0
+    #       gpgcheck=1
+    #       gpgkey=https://packages.microsoft.com/keys/microsoft.asc          
 
-    - name: Get Wallpapers
-      ansible.builtin.find:
-        patterns: "*.png"
-        paths: "/usr/share/backgrounds/wallpapers"
-        recurse: yes
-      register: wallpapers
+    - name: Place Prebuilt Files
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      with_items:
+        - { src: networkminer.png, dest: "{{ nm_path }}/networkminer.png" }
+
+    - name: Write Configuration Files
+      ansible.builtin.copy:
+        dest: "{{ item.dest }}"
+        content: "{{ item.content }}"
+      with_items:
+        - { dest: /usr/share/applications/NetworkMiner.desktop, content: "{{ nm_desktop_file }}" }
+        - { dest: /etc/yum.repos.d/vscode.repo, content: "{{ vscode_repo }}" }
+        - { dest: 'test.sh', content: "{{ pia_install_wrapper }}" }
+        - { dest: /etc/dconf/db/local.d/00-extensions, content: "{{ shell_extensions }}" }
+        - { dest: /etc/dconf/db/local.d/00-favorite-apps, content: "{{ user_favorites }}" }
+        - { dest: /etc/dconf/db/local.d/00-background, content: "{{ user_background }}" }
+        - { dest: /etc/dconf/db/local.d/00-windowbuttons, content: "{{ window_buttons }}" }
+        - { dest: /etc/dconf/db/local.d/00-darkmode, content: "{{ dark_mode }}" }
+        # - { dest: /etc/yum.repos.d/microsoft.repo, content: "{{ powershell_repo }}" }
 
     - name: Template Wallpaper XML
       ansible.builtin.copy:
@@ -280,75 +133,59 @@
       loop:
         "{{ wallpapers.files }}"
 
-    - name: Update dconf
-      ansible.builtin.shell:
-        cmd: dconf update
+    - name: chmod NetworkMiner Files
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        mode: "{{ item.mode }}"
+        state: "{{ item.state }}"
+        recurse: "{{ item.recurse }}"
+      with_items: 
+        - { mode: "+x", state: file, recurse: no, path: "{{ nm_path }}/NetworkMiner.exe" }
+        - { mode: "go+w", state: directory, recurse: yes, path: "{{ nm_path }}/AssembledFiles" }
+        - { mode: "go+w", state: directory, recurse: yes, path: "{{ nm_path }}/Captures" }
 
-    - name: Remove Un-needed Packages
+    - name: Update (except kernel), Install Tweaks and Tools, Remove Chrome Config
       ansible.builtin.dnf:
-        name:
-          - fedora-chromium-config
-          - gnome-boxes
-          # - gnome-tour  # CANNOT RUN because first-user will fail
-        state: absent
-        autoremove: yes
+        name: "{{ item.name }}"
+        state: "{{ item.state }}"
+        exclude: "{{ item.exclude }}"
+        enablerepo: "{{ item.enablerepo }}"
+        autoremove: "{{ item.autoremove }}"
+      with_items:
+        - { name: "*", state: "latest", exclude: "kernel-core,kernel-modules", enablerepo: "", autoremove: no }
+        - { name: "gnome-extensions-app,gnome-tweaks,gnome-shell-extension-frippery-applications-menu,gnome-shell-extension-apps-menu,gnome-shell-extension-caffeine,gnome-shell-extension-no-overview,gnome-shell-extension-window-list,gnome-shell-extension-dash-to-dock,https://forensics.cert.org/cert-forensics-tools-release-36.rpm,fedora-workstation-repositories", state: "latest", exclude: "", enablerepo: "", autoremove: no }
+        - { name: "mono-devel,net-tools,nmap,putty,screen,suricata,tcpdump,tcpreplay,wireshark,yara,google-chrome-stable,code,brim,zeek,autopsy,Volatility,avml,gcc,openssl,expect,remmina", state: latest, exclude: "", enablerepo: "google-chrome,code", autoremove: no }  # - powershell #,powershell
+        - { name: "fedora-chromium-config,gnome-boxes", state: "absent", exclude: "", enablerepo: "", autoremove: yes }
+        # removed yubioath-desktop,pidgin,gnome-shell-extension-pidgin,libpurple-devel,libmarkdown-devel,json-glib-devel,glib2,git,opensc
+        # added gnome-boxes to be removed
 
-    # CANNOT RUN because first-user will fail
-    # - name: Run dnf clean all
-    #   ansible.builtin.shell:
-    #     cmd: dnf clean all
+    - name: Run Ad-Hoc Commands - Convert/Move/Update CA, Install Horizon, dconf Update, Create PIA User
+      ansible.builtin.shell:
+        cmd: "{{ item }}"
+      with_items:
+        - openssl pkcs7 -in Certificates_PKCS7_v5.6_DoD/Certificates_PKCS7_v5.6_DoD.pem.p7b -print_certs -out DoD_CAs.pem
+        - cp DoD_CAs.pem /etc/pki/ca-trust/source/anchors
+        - update-ca-trust
+        # - printf "no\nno\n" | bash VMware-Horizon-Client-2206-8.6.0-20094634.x64.bundle --console --required --eulas-agreed --stop-services
+        - dconf update
+        - useradd -UG wheel -p $(openssl passwd -6 testpass) testuser
 
-    # - name: Remove VMware Chrome Policy
-    #   ansible.builtin.shell:
-    #     cmd: rm /etc/opt/chrome/policies/managed/vmware-urlAllowlist.json
+# removed pidgin plugin
 
-    - name: Expand etc Settings
-      ansible.builtin.unarchive:
-        src: settings.tar.gz
-        dest: '/'
+# removed horizon/smartcard support
 
-    # - name: Colorize bash prompts
-    #   ansible.builtin.blockinfile:
-    #     path: "{{ item }}"
-    #     block: |
-    #       # original: No colors, No PS0, PS1="[\u@\h \W] \$"
-    #       TPUT_RED=$(($(tput colors) < 256 ? 1 : 196))
-    #       TPUT_GREEN=$(($(tput colors) < 256 ? 2 : 46))
-    #       TPUT_ORANGE=$(($(tput colors) < 256 ? 3 : 208))
-    #       TPUT_BLUE=$(($(tput colors) < 256 ? 4 : 27))
-    #       TPUT_PURPLE=$(($(tput colors) < 256 ? 5 : 129))
+    - name: Install PIA with dummy user
+      become: true
+      become_user: testuser
+      vars:
+        ansible_become_pass: testpass
+      ansible.builtin.shell:
+        cmd: bash /tmp/test.sh
 
-    #       ANSI_CLEAR="\[\033[0m\]"
-    #       ANSI_BLACK="\[\033[1;90m\]"
-    #       ANSI_RED="\[\033[1;31m\]"
-    #       ANSI_GREEN="\[\033[1;32m\]"
-    #       ANSI_YELLOW="\[\033[1;93m\]"
-    #       ANSI_BLUE="\[\033[1;94m\]"
-    #       ANSI_PURPLE="\[\033[1;95m\]"
-    #       ANSI_BOLD="\[\033[1m\]"
-
-    #       #SSH_BOX=$(if [[ $SSH_CLIENT ]]; then printf "$SSH_CLIENT" | cut -d '=' -f 2 | awk '{print $1}'; else printf ""; fi)
-
-    #       #PS0="$(tput cuu 1; tput cuf $(tput cols); tput cub 20; printf ' @ [';)$(tput setaf $TPUT_ORANGE)\D{%F %H:%M}$(tput sgr0)]\n"
-    #       #PS1="$ANSI_BOLD$(printf "\u250c\u2500\u2500\u27ea")${ANSI_BLACK} $(tty | sed 's|/dev/||g')${ANSI_CLEAR}${ANSI_BOLD} on $ANSI_BLUE\h${ANSI_CLEAR}${ANSI_BOLD}$(if [[ $SSH_BOX ]]; then printf " from ${ANSI_YELLOW}$SSH_BOX"; fi)${ANSI_CLEAR}${ANSI_BOLD} in $ANSI_PURPLE\w${ANSI_CLEAR}${ANSI_BOLD} $(printf "\u27eb\u2500")\n$(printf "\u2514\u27eb") $(if [[ $UID -eq 0 ]]; then printf "$ANSI_RED"; printf '#'; else printf "$ANSI_GREEN"; printf '$'; fi)$ANSI_CLEAR "
-    #       PS1="[$(if [[ $UID -eq 0 ]]; then printf "$ANSI_RED"; else printf "$ANSI_GREEN"; fi)\u$ANSI_CLEAR$ANSI_BOLD@$ANSI_BLUE\h $ANSI_PURPLE\W$ANSI_CLEAR$ANSI_BOLD] \$$ANSI_CLEAR "
-    #   with_items:
-    #     - /etc/skel/.bashrc
-    #     - /root/.bashrc
-
-    # - name: Open Required Ports in Firewall
-    #   ansible.builtin.firewalld:
-    #     service: "{{ item }}"
-    #     state: enabled
-    #     permanent: yes
-    #     immediate: yes
-    #   with_items:
-    #     - vnc
-
-    # - name: Enable and Start Services
-    #   ansible.builtin.systemd:
-    #     name: "{{ item }}"
-    #     state: "started"
-    #     enabled: yes
-    #   with_items:
-    #     - vncserver@:1
+    - name: PIA Post-Install Commands
+      ansible.builtin.shell:
+        cmd: "{{ item }}"
+      with_items:
+        - "PIA_PID=$(ps -ef | grep -v grep | grep pia | awk '{print $2}'); if [[ $PIA_PID ]]; then kill -9 $PIA_PID; fi"
+        - userdel testuser
+        - rm -rf /home/testuser /var/spool/mail/testuser
