@@ -60,6 +60,16 @@
         - { src: "https://download.fedoraproject.org/pub/fedora/linux/releases/{{ version }}/Everything/x86_64/os/.treeinfo", dest: "/var/www/html/f{{ version }}-inst.local/.treeinfo" }
         - { src: "https://download.fedoraproject.org/pub/fedora/linux/releases/{{ version }}/Everything/x86_64/os/.discinfo", dest: "/var/www/html/f{{ version }}-inst.local/.discinfo" }
 
+    - name: Get nmconnection Filename
+      ansible.builtin.find:
+        path: /etc/NetworkManager/system-connections/
+        pattern: "*.nmconnection"
+      register: nm_conn
+
+    - name: Get DNS Server from nmconnection File
+      ansible.builtin.set_fact:
+        DNS_Server: "{{ lookup('file', {{ nm_conn.files[0].path }}) | regex_findall('\\s*nameserver\\s*(.*)') }}"
+
     - name: Copy Template Files
       ansible.builtin.template:
         src: "{{ item.src }}"
