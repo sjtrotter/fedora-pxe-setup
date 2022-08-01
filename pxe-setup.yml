@@ -68,7 +68,7 @@
 
     - name: Get DNS Server from nmconnection File
       ansible.builtin.set_fact:
-        DNS_Server: "{{ lookup('file', nm_conn.files[0].path) | regex_findall('\\s*nameserver\\s*(.*)') }}"
+        DNS_Server: "{{ lookup('file', nm_conn.files[0].path) | regex_findall('\\s*dns\\s*(.*)') }}"
 
     - name: debug DNS_Server
       ansible.builtin.debug:
