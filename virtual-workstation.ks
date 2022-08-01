@@ -52,7 +52,7 @@ echo "installing ansible..."
 dnf install ansible wget -y
 
 echo ""
-echo "getting playbook, networkminer icon, and wallpapers..."
+echo "getting playbook, networkminer icon, wallpapers, and settings..."
 wget http://{{ ansible_default_ipv4.address }}/f{{ version }}-inst.local/plays/virtual-post.yml
 wget http://{{ ansible_default_ipv4.address }}/f{{ version }}-inst.local/other/networkminer.png
 wget -r -np -nH --cut-dirs=1 -R "index.html*" http://{{ ansible_default_ipv4.address }}/f{{ version }}-inst.local/wallpapers/ -P /usr/share/backgrounds
@@ -62,8 +62,14 @@ echo ""
 echo "running ansible playbook..."
 ansible-playbook virtual-post.yml
 
-echo ""
-echo "all done!"
+if [[ $? -ne 0 ]]; then
+    printf "\nError in playbook.\nPress Ctrl+Alt+F2 for shell to investigate.\nPress Ctrl+Alt+F1 to return here.\n"
+    read -rp "Press enter to finish." enter
+else
+    echo ""
+    echo "all done!"
+    sleep 10s
+fi
 } 2>&1 | sed "s/\$/$CR/" >> /dev/tty1
 
 chvt 6

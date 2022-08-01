@@ -61,8 +61,14 @@ echo ""
 echo "running ansible playbook..."
 ansible-playbook workstation-post.yml
 
-echo ""
-echo "all done!"
+if [[ $? -ne 0 ]]; then
+    printf "\nError in playbook.\nPress Ctrl+Alt+F2 for shell to investigate.\nPress Ctrl+Alt+F1 to return here.\n"
+    read -rp "Press enter to finish." enter
+else
+    echo ""
+    echo "all done!"
+    sleep 10s
+fi
 } 2>&1 | sed "s/\$/$CR/" >> /dev/tty1
 
 chvt 6
