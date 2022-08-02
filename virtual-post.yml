@@ -185,12 +185,17 @@
       ansible.builtin.shell:
         cmd: bash /tmp/test.sh
 
-    - name: PIA Post-Install Commands
+    - name: PIA Post-Install Commands - Kill Processes
       ansible.builtin.shell:
         cmd: "{{ item }}"
       with_items:
         - "PIA_PID=$(ps -ef | grep -v grep | grep pia | awk '{print $2}'); if [[ $PIA_PID ]]; then kill -9 $PIA_PID; fi"
         - for pid in $(ps -aux | egrep ^1000 | awk '{print $2}'); do kill -9 $pid; done
+
+    - name: PIA Post-Install Commands - Delete User
+      ansible.builtin.shell:
+        cmd: "{{ item }}"
+        with_items:
         - userdel testuser
         - rm -rf /home/testuser /var/spool/mail/testuser
 
