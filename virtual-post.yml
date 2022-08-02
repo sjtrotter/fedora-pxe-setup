@@ -110,7 +110,7 @@
         dest: "{{ item.dest }}"
       with_items:
         - { src: networkminer.png, dest: "{{ nm_path }}/networkminer.png" }
-        - { src: adduser.local, dest: "/etc/shadow-maint/useradd-post.d/adduser.local"}
+        # - { src: adduser.local, dest: "/etc/shadow-maint/useradd-post.d/adduser.local"}
 
     - name: Write Configuration Files
       ansible.builtin.copy:
@@ -192,3 +192,11 @@
         - "PIA_PID=$(ps -ef | grep -v grep | grep pia | awk '{print $2}'); if [[ $PIA_PID ]]; then kill -9 $PIA_PID; fi"
         - userdel testuser
         - rm -rf /home/testuser /var/spool/mail/testuser
+
+    - name: Place adduser.local File
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      with_items:
+        # - { src: networkminer.png, dest: "{{ nm_path }}/networkminer.png" }
+        - { src: adduser.local, dest: "/etc/shadow-maint/useradd-post.d/adduser.local"}
