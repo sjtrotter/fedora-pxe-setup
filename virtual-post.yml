@@ -195,7 +195,7 @@
     - name: PIA Post-Install Commands - Delete User
       ansible.builtin.shell:
         cmd: "{{ item }}"
-        with_items:
+      with_items:
         - userdel testuser
         - rm -rf /home/testuser /var/spool/mail/testuser
 
