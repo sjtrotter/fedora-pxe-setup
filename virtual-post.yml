@@ -46,29 +46,6 @@
       ansible.builtin.set_fact:
         nm_path: "{{ paths.results[0].files[0].path }}"
         wallpapers: "{{ paths.results[1] }}"
-        vnc_adduser: |
-          #!/usr/bin/env bash
-          {
-          echo $(date)
-          env
-          username=$SUBJECT
-          uid=$(id -u $username)
-          home=/home/$username
-          echo $username
-          echo $uid
-          echo $home
-          printf "User: $username\nUID: $uid\nHome: $home\n"
-          display_num="$((${uid:2:2}+1))"
-          if [[ ${#display_num} -eq 1 ]]; then
-              display_num="0${display_num}"
-          fi
-          display=":${display_num}"
-          printf "Display: :${display_num}"
-          printf "${display}=${SUBJECT}\n" >> /etc/tigervnc/vncserver.users
-          su $username -c 'printf "P@ssw0rd\nP@ssw0rd\n" | vncpasswd'
-          systemctl enable vncserver@${display}.service
-          systemctl start vncserver@${display}.service
-          } 2>&1 >> /tmp/log.txt
         nm_desktop_file: |
           [Desktop Entry]
           Type=Application
@@ -115,13 +92,6 @@
     #       gpgcheck=1
     #       gpgkey=https://packages.microsoft.com/keys/microsoft.asc          
 
-    - name: Place Prebuilt Files
-      ansible.builtin.copy:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-      with_items:
-        - { src: networkminer.png, dest: "{{ nm_path }}/networkminer.png" }
-
     - name: chmod NetworkMiner Files, Add Dir for useradd.local
       ansible.builtin.file:
         path: "{{ item.path }}"
@@ -132,7 +102,15 @@
         - { mode: "+x", state: file, recurse: no, path: "{{ nm_path }}/NetworkMiner.exe" }
         - { mode: "go+w", state: directory, recurse: yes, path: "{{ nm_path }}/AssembledFiles" }
         - { mode: "go+w", state: directory, recurse: yes, path: "{{ nm_path }}/Captures" }
-        - { mode: "0755", state: directory, recurse: no, path: "/etc/shadow-maint/useradd-post.d"}
+        - { mode: "0755", state: directory, recurse: no, path: "/etc/shadow-maint/useradd-post.d" }
+
+    - name: Place Prebuilt Files
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      with_items:
+        - { src: networkminer.png, dest: "{{ nm_path }}/networkminer.png" }
+        - { src: adduser.local, dest: "/etc/shadow-maint/useradd-post.d/adduser.local"}
 
     - name: Write Configuration Files
       ansible.builtin.copy:
