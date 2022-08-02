@@ -125,7 +125,6 @@
         - { dest: /etc/dconf/db/local.d/00-background, content: "{{ user_background }}" }
         - { dest: /etc/dconf/db/local.d/00-windowbuttons, content: "{{ window_buttons }}" }
         - { dest: /etc/dconf/db/local.d/00-darkmode, content: "{{ dark_mode }}" }
-        - { dest: "/etc/shadow-maint/useradd-post.d/adduser.local", content: "{{ vnc_adduser }}" }
         # - { dest: /etc/yum.repos.d/microsoft.repo, content: "{{ powershell_repo }}" }
 
     - name: Template Wallpaper XML
