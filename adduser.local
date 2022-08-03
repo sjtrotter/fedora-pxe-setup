@@ -1,23 +1,17 @@
 #!/usr/bin/env bash
+if [[ "${SUBJECT}" == "" ]]; then exit; fi
 {
-    if [[ ${SUBJECT} == "" ]]; then exit; fi
-    echo $(date)
-    env
-    username=$SUBJECT
-    uid=$(id -u $username)
-    home=/home/$username
-    echo $username
-    echo $uid
-    echo $home
-    printf "User: $username\nUID: $uid\nHome: $home\n"
-    display_num="$((${uid:2:2}+1))"
-    if [[ ${#display_num} -eq 1 ]]; then
-        display_num="0${display_num}"
+    POST_USERADD_USER=${SUBJECT}
+    POST_USERADD_UID=$(id -u ${POST_USERADD_USER})
+    POST_USERADD_HOME="/home/${POST_USERADD_USER}"
+
+    POST_USERADD_DISPLAY_NUM="$((${POST_USERADD_UID:2:2}+1))"
+    if [[ "${#POST_USERADD_DISPLAY_NUM}" -eq 1 ]]; then
+        POST_USERADD_DISPLAY_NUM="0${POST_USERADD_DISPLAY_NUM}"
     fi
-    display=":${display_num}"
-    printf "Display: :${display_num}"
-    printf "${display}=${SUBJECT}\n" >> /etc/tigervnc/vncserver.users
-    su $username -c 'printf "P@ssw0rd\nP@ssw0rd\n" | vncpasswd'
-    systemctl enable vncserver@${display}.service
-    systemctl start vncserver@${display}.service
-} 2>&1 >> /tmp/log.txt
+    POST_USERADD_DISPLAY=":${POST_USERADD_DISPLAY_NUM}"
+    printf "${POST_USERADD_DISPLAY}=${POST_USERADD_USER}\n" >> /etc/tigervnc/vncserver.users
+    su $POST_USERADD_USER -c 'printf "password\npassword\n" | vncpasswd'
+    systemctl enable "vncserver@${POST_USERADD_DISPLAY}.service"
+    systemctl start "vncserver@${POST_USERADD_DISPLAY}.service"
+} 2>&1 >> /tmp/useradd-vnc-log.txt
