@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 {
+    if [[ ${SUBJECT} == "" ]]; then exit; fi
     echo $(date)
     env
     username=$SUBJECT

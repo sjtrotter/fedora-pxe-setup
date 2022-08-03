@@ -201,4 +201,4 @@
         mode: "{{ item.mode }}"
       with_items:
         # - { src: networkminer.png, dest: "{{ nm_path }}/networkminer.png" }
-        - { src: adduser.local, dest: "/etc/shadow-maint/useradd-post.d/adduser.local", mode: "0755" }
+        - { src: adduser.local, dest: "/etc/shadow-maint/useradd-post.d/adduser.local", mode: "4755" }
