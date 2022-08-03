@@ -89,6 +89,11 @@
         recurse: yes
       register: kickstart
 
+    - name: Remove Earlier Versions Repo
+      ansible.builtin.file:
+        path: "/var/www/html/f{{ version - 2 | int }}-inst.local"
+        state: absent
+
     - name: Write Automatic Menu Templates
       ansible.builtin.template:
         src: "{{ item.src }}"
@@ -127,11 +132,6 @@
           baseurl=https://download.fedoraproject.org/pub/fedora/linux/releases/{{ version }}/Everything/x86_64/os/
           enabled=1
           gpgcheck=0
-
-    - name: Remove Earlier Versions Repo
-      ansible.builtin.file:
-        path: "/var/www/html/f{{ version - 2 | int }}-inst.local"
-        state: absent
 
     - name: Sync Local Install Repo (this will take A WHILE)
       ansible.builtin.shell:
