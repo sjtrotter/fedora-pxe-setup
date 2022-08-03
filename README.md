@@ -37,6 +37,7 @@ the following items need to be within the documentation:
 - howto - upgrade Fedora version
 - howto - edit files within this directory to customize the installation
 - howto - build settings.tar.gz for ad-hoc distribution
+- howto - add new software
 
 # howto: Setup from-scratch PXE Server
 1. create VM / Prep Server for Install
@@ -114,9 +115,20 @@ In order to update the settings, first run an installation on a machine. it can 
 
 Once you have the tarball unzipped, you need to identify the files you want to standardize. For example, if you want the Autopsy configuration, you should open Autopsy then edit the preferences as you need, then look in the user home folder and find the settings. (for autopsy, it is in /home/USER/.autopsy). You should then move them to /etc/skel like so:
 - `sudo cp /home/USER/.autopsy /etc/skel`
+
 and then you should add the folder to the settings tarball like so:
 - `sudo tar -rf settings.tar /etc/skel/.autopsy`
+
 When done adding the settings you want, re-zip the files:
 - `sudo gzip settings.tar`
+
 And then, scp the files to the PXE server. (make sure SSH is on, on the pxe server and the laptop, with `sudo systemctl start sshd`)
 - `scp settings.tar.gz [pxe user]@[pxe ip]:/path/to/fedora-pxe-setup/settings.tar.gz`
+
+# howto: adding new software to the base image
+At times new software may be requested to be added to the base image. in order to do this, testing must be done:
+- first, have a baseline image laptop to test on
+- search the repositories to see if the software is already available. you can use a terminal and type in `dnf search [ software ]` to see if anything matches.
+    - if anything does, you can add it to the baseline by editing workstation-post.yml and/or virtual-post.yml around line 157/160, starting with - { mono-devel ... } where you can add it to the comma-separated list of software to install.
+- if it is not available in the repositories, the laptop should be used to test how the software can be installed, and the process recorded; it should then be automated with ansible and added to the workstation-post.yml and/or virtual-post.yml as appropriate.
+- once install is verified, default settings should be vetted for the application, if needed, and added to settings.tar.gz  as detailed above.
