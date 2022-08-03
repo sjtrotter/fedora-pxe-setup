@@ -100,6 +100,8 @@ Setting this number 2 versions higher than the original installation of the PXE 
     - file: basic-workstation.ks - within this file, the line `autopart --encrypted --passphrase workstation` (line 30) should have the last item, workstation, changed to whatever you want the encryption password to be. This should be in quotes if you use any special characters. The virtual-workstation.ks file does not encrypt by default because usually you do not want to encrypt a virtual machine, because you'd have to access the console to unlock it.
 - task: add default user
     - file: basic-workstation.ks, virtual-workstation.ks - if you decide you want a default user to be set, uncomment the line `#user --groups=wheel --name=user --password=workstation --gecos="user"` (around line 40) (remove the '#') and then edit the --name= and --gecos= and --password= values to setup the user. By default, users are not set; this allows (forces?) the end-user of the laptop to create their own user account. Remember to quote the password if any special characters are used.
+- task: change VNC password
+    - file: adduser.local - within this file, edit the line `su $username -c 'printf "P@ssw0rd\nP@ssw0rd\n" | vncpasswd'` (line 19) and replace the default password with the desired password.
 
 Once you change any files, **DO NOT** git push back into the repository, if you have set up to push.
 
