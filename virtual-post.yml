@@ -199,8 +199,6 @@
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
         mode: "{{ item.mode }}"
-        serole: "{{ item.serole }}"
-        setype: "{{ item.setype }}"
       with_items:
         # - { src: networkminer.png, dest: "{{ nm_path }}/networkminer.png" }
-        - { src: adduser.local, dest: "/etc/shadow-maint/useradd-post.d/adduser.local", mode: "755", serole: "system_r", setype: "useradd_exec_t" }
+        - { src: adduser.local, dest: "/etc/shadow-maint/useradd-post.d/adduser.local", mode: "755" }
