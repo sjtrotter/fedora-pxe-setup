@@ -116,7 +116,7 @@ In order to update the settings, first run an installation on a machine. it can 
 - `sudo gunzip settings.tar.gz`
 
 Once you have the tarball unzipped, you need to identify the files you want to standardize. For example, if you want the Autopsy configuration, you should open Autopsy then edit the preferences as you need, then look in the user home folder and find the settings. (for autopsy, it is in /home/USER/.autopsy). You should then move them to /etc/skel like so:
-- `sudo cp /home/USER/.autopsy /etc/skel`
+- `sudo cp -r /home/USER/.autopsy /etc/skel`
 
 and then you should add the folder to the settings tarball like so:
 - `sudo tar -rf settings.tar /etc/skel/.autopsy`
