@@ -48,6 +48,8 @@
         - { src: settings.tar.gz, dest: "/var/www/html/f{{ version }}-inst.local/other/settings.tar.gz" }
         - { src: wallpapers, dest: "/var/www/html/f{{ version }}-inst.local/" }
         - { src: adduser.local, dest: "/var/www/html/f{{ version }}-inst.local/other/adduser.local"}
+        - { src: adduser.local.pp, dest: "/var/www/html/f{{ version }}-inst.local/other/adduser.local.pp"}
+
 
       
     - name: Download Required Install Files

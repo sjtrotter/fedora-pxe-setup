@@ -185,15 +185,6 @@
       ansible.builtin.shell:
         cmd: bash /tmp/test.sh
 
-    - name: PIA Post-Install Commands - Kill Processes, Delete Dummy User
-      ansible.builtin.shell:
-        cmd: "{{ item }}"
-      with_items:
-        - "PIA_PID=$(ps -ef | grep -v grep | grep pia | awk '{print $2}'); if [[ $PIA_PID ]]; then kill -9 $PIA_PID; fi"
-        - "for pid in $(ps -aux | egrep '(^1000|^testuser)' | awk '{print $2}'); do kill -9 $pid; done"
-        - userdel -f testuser
-        - rm -rf /home/testuser /var/spool/mail/testuser
-
     - name: Place adduser.local File
       ansible.builtin.copy:
         src: "{{ item.src }}"
@@ -202,3 +193,13 @@
       with_items:
         # - { src: networkminer.png, dest: "{{ nm_path }}/networkminer.png" }
         - { src: adduser.local, dest: "/etc/shadow-maint/useradd-post.d/adduser.local", mode: "755" }
+
+    - name: Post-Install Ad-Hoc Commands - Kill Processes, Delete Dummy User, Apply adduser.local policy
+      ansible.builtin.shell:
+        cmd: "{{ item }}"
+      with_items:
+        - "PIA_PID=$(ps -ef | grep -v grep | grep pia | awk '{print $2}'); if [[ $PIA_PID ]]; then kill -9 $PIA_PID; fi"
+        - "for pid in $(ps -aux | egrep '(^1000|^testuser)' | awk '{print $2}'); do kill -9 $pid; done"
+        - userdel -f testuser
+        - rm -rf /home/testuser /var/spool/mail/testuser
+        - semodule -i adduser.local.pp

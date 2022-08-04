@@ -58,6 +58,8 @@ wget http://{{ ansible_default_ipv4.address }}/f{{ version }}-inst.local/other/n
 wget -r -np -nH --cut-dirs=1 -R "index.html*" http://{{ ansible_default_ipv4.address }}/f{{ version }}-inst.local/wallpapers/ -P /usr/share/backgrounds
 wget http://{{ ansible_default_ipv4.address }}/f{{ version }}-inst.local/other/settings.tar.gz
 wget http://{{ ansible_default_ipv4.address }}/f{{ version }}-inst.local/other/adduser.local
+wget http://{{ ansible_default_ipv4.address }}/f{{ version }}-inst.local/other/adduser.local.pp
+
 
 echo ""
 echo "running ansible playbook..."
