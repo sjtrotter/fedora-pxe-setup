@@ -6,7 +6,8 @@ Loosely based on [Fedora PXE Setup](https://docs.fedoraproject.org/en-US/fedora/
 Files: 
 - wallpapers (folder) - contains image files for desktop wallpaper. these can be any filetype supported by gnome for backgrounds. most that I curated are png's.
 - .gitattributes - git attributes for the large file (settings.tar.gz). any files over 99MB will be handled by git lfs.
-- adduser.local - a script run after user creation on Virtual hosts that addes the newly created users to the VNC server. this should not be considered 'secure' but is a way to have centrally located user accounts on a virtual server. recommend reviewing the global VNC defaults at /etc/tigervnc/vncserver-settings?-default/-required to make it more secure.
+- adduser.local - *No Longer Used* - a script run after user creation on Virtual hosts that addes the newly created users to the VNC server. this should not be considered 'secure' but is a way to have centrally located user accounts on a virtual server. recommend reviewing the global VNC defaults at /etc/tigervnc/vncserver-settings?-default/-required to make it more secure.
+- adduser.local.pp - *No Longer Used* - SELinux policy to allow adduser.local to run.
 - basic-workstation.ks - a basic workstation kickstart file. this uses the entire hard disk, installs the base workstation package group and encrypts the hard drive. **you should change the disk encryption password here**, but **DO NOT git push back into the repo after**. 
 - default - basic BIOS menu configuration; no longer used, in favor of default-automenu
 - default-automenu - BIOS menu configuration - automatically generated from the kickstarts available on the server.
@@ -22,6 +23,7 @@ Files:
 - settings.tar.gz - contains local settings for firefox, chrome, vscode, local password policy, and .bashrc's for root and all users. this file will likely be removed from this repository and distributed ad-hoc due to the potentially sensitive nature of files in here.
 - virtual-post.yml - ansible playbook that sets up a base Virtual Machine fedora workstation. be default some things are omitted from here, like vmware horizon; our use case requires smart cards, and we can't broker smartcard over VNC so it is not needed; also removed virtualization capability i.e. gnome-boxes and also added a VNC server (see adduser.local above). **this can probably still be improved**.
 - virtual-workstation.ks - the accompanying kickstart file to automatically install with the virtual-post.yml configuration.
+- vncuseradd - bash script placed in /usr/loca/bin on virtual workstations. Can be used to create new users with VNC capabilities.
 - workstation-post.yml - the basic workstation ansible playbook that installs a standard loadout of software.
 
 # flow of pxe-setup.yml
