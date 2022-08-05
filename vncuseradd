@@ -1,0 +1,143 @@
+#!/usr/bin/env bash
+
+readonly ERR_NO_VNCSRV=64
+readonly ERR_UNK_OPT=65
+readonly ERR_NO_LOGIN=66
+readonly ERR_NO_PASSWD=67
+readonly ANSI_RED="\033[1;31m"
+readonly ANSI_CLEAR="\033[0m"
+
+unset ADMIN
+unset PASSWORD
+ARGS=()
+
+
+finish () {
+    local rc="$1"
+    local msg="$2"
+    if [[ $rc -gt 0 ]]; then
+        printf "${ANSI_RED}%s: %s${ANSI_CLEAR}\n" "$(basename $0)" "${msg}"
+        usage
+    fi
+    exit ${rc}
+} >&2
+
+usage () {
+    printf "\n\
+$(basename $0)  - adds new LOGIN(s) with VNC capabilities\n\
+* needs TigerVNC Server installed with config at /etc/tigervnc/vncserver.users\n\
+\n\
+Usage: vncuseradd [OPTION] -p PASSWORD LOGIN [LOGIN]...\n\
+\n\
+Options:\n\
+  -a            make the LOGIN(s) an admin account\n\
+  -p PASSWORD   password of the new account\n\
+                for more than one LOGIN, PASSWORD will apply to all. \n\
+                this input method is *NOT SECURE*. have user change ASAP.\n\
+  -h            display this help message and exit \n\
+\n"
+}
+
+parse_args () {
+    optstring="ahp:"
+
+    while [[ $OPTIND -le "$#" ]]; do
+        if getopts ${optstring} arg; then
+            case ${arg} in
+                a) ADMIN=yes ;;
+                h) usage; finish 0 "";;
+                p) PASSWORD="${OPTARG}" ;;
+                ?) finish 2 ;;
+            esac
+        else
+            ARGS+=("${!OPTIND}")
+            ((OPTIND++))
+        fi
+    done
+
+    if [[ ${#ARGS[@]} -lt 1  ]]; then
+        finish $ERR_NO_LOGIN "no LOGIN given"
+    fi
+
+    if [[ ! ${PASSWORD} ]]; then
+        finish $ERR_NO_PASSWD "no PASSWORD given"
+    fi
+}
+
+create_userfile () {
+    printf "" > /tmp/newusers
+    for user in ${ARGS[@]}; do
+        printf "$user:$PASSWORD:::$user:/home/$user:/bin/bash\n" >> /tmp/newusers
+    done
+}
+
+create_users () {
+    for user in ${ARGS[@]}; do
+        if [[ ! -d /home/$user ]]; then
+            sudo bash -c "cp -r /etc/skel /home/$user"
+        fi
+    done
+    sudo newusers /tmp/newusers
+    rm -rf /tmp/newusers
+
+    for user in ${ARGS[@]}; do
+        sudo chown $user:$user /home/$user
+    done
+    
+}
+
+set_vnc () {
+    for user in ${ARGS[@]}; do
+        if [[ ! $(grep $user /etc/tigervnc/vncserver.users) ]]; then
+            uid=$(id -u ${user})
+            display_num="${uid:2:2}"
+
+            if [[ ${display_num:0:1} -eq 0 ]]; then
+                display_num="${display_num:1:1}"
+            fi
+
+            display_num="$((${display_num}+10))"
+            display=":${display_num}"
+
+            printf "${display}=${user}\n" | sudo tee -a /etc/tigervnc/vncserver.users > /dev/null
+
+            sudo su $user -c 'printf "password\npassword\n" | vncpasswd 2>&1>/dev/null' >/dev/null
+
+            sudo systemctl --quiet enable "vncserver@${display}.service"
+            sudo systemctl --quiet start "vncserver@${display}.service"
+        fi
+    done
+}
+
+set_admin () {
+    if [[ $ADMIN == "yes" ]]; then
+        for user in ${ARGS[@]}; do
+            sudo usermod -G wheel $user
+        done
+    fi
+}
+
+print_userports () {
+    for user in ${ARGS[@]}; do
+        display=$(grep $user /etc/tigervnc/vncserver.users | cut -d '=' -f1 | cut -d ":" -f2)
+        printf "$user - port 59$display\n"
+    done
+        printf "MAKE SURE users change passwords on login!\n"
+        printf '`passwd` and also `vncpasswd` in terminal.'
+        echo
+}
+
+main () {
+    parse_args "$@"
+    create_userfile
+    create_users
+    set_admin
+    set_vnc
+    print_userports
+}
+
+if [[ ! -f /etc/tigervnc/vncserver.users ]]; then
+    finish $ERR_NO_VNCSRV "tigervnc-server not installed"
+fi
+
+if [[ $(basename $0) == "vncuseradd" ]]; then main "$@"; fi
