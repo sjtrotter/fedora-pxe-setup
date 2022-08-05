@@ -30,7 +30,7 @@ Files:
 
 IF any files are changed on the pxe server, i.e. the basic-workstation.ks file to change the LUKS encryption key, the pxe-setup.yml should be run again with `sudo ansible-playbook pxe-setup.yml` within this directory. **the local repo sync will take much less time, as it will only verify vice re-download**.
 
-# TODO for documentation
+# HOWTO: Documentation
 the following items need to be within the documentation:
 - howto - setup from-scratch pxe server
 - howto - setup from-VM-clone pxe server
@@ -38,8 +38,9 @@ the following items need to be within the documentation:
 - howto - edit files within this directory to customize the installation
 - howto - build settings.tar.gz for ad-hoc distribution
 - howto - add new software
+- howto - create VNC virtual machine
 
-# howto: Setup from-scratch PXE Server
+## howto: Setup from-scratch PXE Server
 1. create VM / Prep Server for Install
     - at least 4 CPUs
     - 4096 MB / 4 GB RAM
@@ -77,7 +78,7 @@ the following items need to be within the documentation:
 6. Done.
     Once the ansible playbook completes successfully, the server is ready to PXE boot devices.
 
-# howto: Setup from-VM-clone PXE server
+## howto: Setup from-VM-clone PXE server
 This assumes you have previously set up a PXE server as a VM according to above and you wish to clone it.
 1. Clone/move as necessary.
 2. Boot from console:
@@ -88,14 +89,14 @@ This assumes you have previously set up a PXE server as a VM according to above 
 3. Done.
     Once playbook completes successfully, the server is ready to PXE boot devices.
 
-# howto: Upgrade Fedora version
+## howto: Upgrade Fedora version
 Fedora upgrades about every 6 months, in April-ish and October-ish. When ready to test the next version, change the `version: ` line at the top of pxe-setup.yml (line 5) to the appropriate number.
 
 One potential breakage this may cause is the CERT Forensic Tools packages. The administrator of the PXE server should ensure that the repository at https://forensics.cert.org/fedora/cert/ is available for the new Fedora version before attempting upgrade (make sure there is a folder for the new version). They should also check to ensure a new key is not needed, by reviewing documentation at https://forensics.cert.org/#fedorasupport
 
 Setting this number 2 versions higher than the original installation of the PXE server will remove the 2nd-to-last installation directory before cloning the repository. this should keep the total size of the server under 200GB.
 
-# howto: Customize the installation
+## howto: Customize the installation
 - task: change hard drive encryption password
     - file: basic-workstation.ks - within this file, the line `autopart --encrypted --passphrase workstation` (line 30) should have the last item, workstation, changed to whatever you want the encryption password to be. This should be in quotes if you use any special characters. The virtual-workstation.ks file does not encrypt by default because usually you do not want to encrypt a virtual machine, because you'd have to access the console to unlock it.
 - task: add default user
@@ -107,7 +108,7 @@ Once you change any files, **DO NOT** git push back into the repository, if you 
 
 If you change any files, you need to run/re-run `sudo ansible-playbook pxe-setup.yml` to apply the changes.
 
-# howto: Customize settings.tar.gz
+## howto: Customize settings.tar.gz
 The default settings.tar.gz contains files that are meant to be uncompressed in the root (/) directory. It contains default settings for Firefox, Chrome, and .bashrc and /root/.bashrc, and also contains a more robust password policy. You may want to include things like default settings for Horizon or for Autopsy to connect to a multi-user database. If so, you will need to add it to the settings tarball to have it take effect.
 
 In order to update the settings, first run an installation on a machine. it can be real or virtual, we just need a baseline. After install, open a terminal and do the following:
@@ -127,10 +128,17 @@ When done adding the settings you want, re-zip the files:
 And then, scp the files to the PXE server. (make sure SSH is on, on the pxe server and the laptop, with `sudo systemctl start sshd`)
 - `scp settings.tar.gz [pxe user]@[pxe ip]:/path/to/fedora-pxe-setup/settings.tar.gz`
 
-# howto: adding new software to the base image
+## howto: adding new software to the base image
 At times new software may be requested to be added to the base image. in order to do this, testing must be done:
 - first, have a baseline image laptop to test on
 - search the repositories to see if the software is already available. you can use a terminal and type in `dnf search [ software ]` to see if anything matches.
     - if anything does, you can add it to the baseline by editing workstation-post.yml and/or virtual-post.yml around line 157/160, starting with - { mono-devel ... } where you can add it to the comma-separated list of software to install.
 - if it is not available in the repositories, the laptop should be used to test how the software can be installed, and the process recorded; it should then be automated with ansible and added to the workstation-post.yml and/or virtual-post.yml as appropriate.
 - once install is verified, default settings should be vetted for the application, if needed, and added to settings.tar.gz  as detailed above.
+
+## howto: create VNC virtual machine
+For single-user virtual machines, modest RAM and storage can be used (something like 2 CPUs, 4G RAM, 50GB storage).
+
+If you are making a main VNC server, make sure to scale storage and memory according to how many users will be created to use the machine. For example: for 15 users, a conservative configuration might be 8 CPUs, 16G RAM, and 200G storage.
+
+the script ```vncuseradd``` can be used to create a new user that has VNC capabilities. you should *NOT* use VNC for the main user created on the account as this will prevent login from the console GUI.
