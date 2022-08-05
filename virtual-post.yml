@@ -102,15 +102,15 @@
         - { mode: "+x", state: file, recurse: no, path: "{{ nm_path }}/NetworkMiner.exe" }
         - { mode: "go+w", state: directory, recurse: yes, path: "{{ nm_path }}/AssembledFiles" }
         - { mode: "go+w", state: directory, recurse: yes, path: "{{ nm_path }}/Captures" }
-        - { mode: "0755", state: directory, recurse: no, path: "/etc/shadow-maint/useradd-post.d" }
 
     - name: Place Prebuilt Files
       ansible.builtin.copy:
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
       with_items:
-        - { src: networkminer.png, dest: "{{ nm_path }}/networkminer.png" }
-        # - { src: adduser.local, dest: "/etc/shadow-maint/useradd-post.d/adduser.local"}
+        - { src: networkminer.png, dest: "{{ nm_path }}/networkminer.png", mode: "0644" }
+        - { src: vncuseradd, dest: "/usr/local/bin/vncuseradd", mode: "0755" }
 
     - name: Write Configuration Files
       ansible.builtin.copy:
@@ -185,15 +185,6 @@
       ansible.builtin.shell:
         cmd: bash /tmp/test.sh
 
-    - name: Place adduser.local File
-      ansible.builtin.copy:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-        mode: "{{ item.mode }}"
-      with_items:
-        # - { src: networkminer.png, dest: "{{ nm_path }}/networkminer.png" }
-        - { src: adduser.local, dest: "/etc/shadow-maint/useradd-post.d/adduser.local", mode: "755" }
-
     - name: Post-Install Ad-Hoc Commands - Kill Processes, Delete Dummy User, Apply adduser.local policy
       ansible.builtin.shell:
         cmd: "{{ item }}"
@@ -202,4 +193,3 @@
         - "for pid in $(ps -aux | egrep '(^1000|^testuser)' | awk '{print $2}'); do kill -9 $pid; done"
         - userdel -f testuser
         - rm -rf /home/testuser /var/spool/mail/testuser
-        - semodule -i adduser.local.pp
