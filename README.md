@@ -144,3 +144,5 @@ For single-user virtual machines, modest RAM and storage can be used (something 
 If you are making a main VNC server, make sure to scale storage and memory according to how many users will be created to use the machine. For example: for 15 users, a conservative configuration might be 8 CPUs, 16G RAM, and 200G storage.
 
 the script ```vncuseradd``` can be used to create a new user that has VNC capabilities. you should *NOT* use VNC for the main user created on the account as this will prevent login from the console GUI.
+
+you can use vncuseradd to add users in bulk, like this: `vncuseradd -p PASSWORD LOGIN1 LOGIN2` etc.. or using bash expansion, like this: `vncuseradd -p PASSWORD LOGIN{1..5}` which will create 5 users called LOGIN# and assign them displays in VNC.
