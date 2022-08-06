@@ -104,7 +104,7 @@ Setting this number 2 versions higher than the original installation of the PXE 
 - task: add default user
     - file: basic-workstation.ks, virtual-workstation.ks - if you decide you want a default user to be set, uncomment the line `#user --groups=wheel --name=user --password=workstation --gecos="user"` (around line 40) (remove the '#') and then edit the --name= and --gecos= and --password= values to setup the user. By default, users are not set; this allows (forces?) the end-user of the laptop to create their own user account. Remember to quote the password if any special characters are used.
 - task: change VNC password
-    - file: adduser.local - within this file, edit the line `su $username -c 'printf "P@ssw0rd\nP@ssw0rd\n" | vncpasswd'` (line 19) and replace the default password with the desired password.
+    - file: vncuseradd - within this file, edit the line `sudo su $user -c 'printf "password\npassword\n" | vncpasswd 2>&1>/dev/null' >/dev/null` (line 109-ish) and replace the default password with the desired password, in both places.
 
 Once you change any files, **DO NOT** git push back into the repository, if you have set up to push.
 
