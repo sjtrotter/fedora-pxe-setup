@@ -6,7 +6,7 @@ Loosely based on [Fedora PXE Setup](https://docs.fedoraproject.org/en-US/fedora/
 Files: 
 - wallpapers (folder) - contains image files for desktop wallpaper. these can be any filetype supported by gnome for backgrounds. most that I curated are png's.
 - .gitattributes - git attributes for the large file (settings.tar.gz). any files over 99MB will be handled by git lfs.
-- adduser.local - *No Longer Used* - a script run after user creation on Virtual hosts that addes the newly created users to the VNC server. this should not be considered 'secure' but is a way to have centrally located user accounts on a virtual server. recommend reviewing the global VNC defaults at /etc/tigervnc/vncserver-settings?-default/-required to make it more secure.
+- adduser.local - *No Longer Used* - a script run after user creation on Virtual hosts that adds the newly created users to the VNC server. this should not be considered 'secure' but is a way to have centrally located user accounts on a virtual server. recommend reviewing the global VNC defaults at /etc/tigervnc/vncserver-settings?-default/-required to make it more secure.
 - adduser.local.pp - *No Longer Used* - SELinux policy to allow adduser.local to run.
 - basic-workstation.ks - a basic workstation kickstart file. this uses the entire hard disk, installs the base workstation package group and encrypts the hard drive. **you should change the disk encryption password here**, but **DO NOT git push back into the repo after**. 
 - default - basic BIOS menu configuration; no longer used, in favor of default-automenu
@@ -50,7 +50,7 @@ the following items need to be within the documentation:
     - for VM, Bridged Network Adapter, or in ESXi, connected to the subnet needed to image from.
 2. Get ISO
     - Use latest Fedora Linux Server DVD: https://download.fedoraproject.org/pub/fedora/releases/ (and then navigate to version > Server > x86_64 > iso and download the dvd iso)
-        - this might change into a different hyperlink because it is a metalink to point to the closest mirror.. the original is download.fedoraproject.org/pub/fedora/releases
+        - this might change into a different hyperlink because it is a metalink to point to the closest mirror. the original is download.fedoraproject.org/pub/fedora/releases
     - For physical servers, burn to CD or write to USB as needed
     - For a VM, load the ISO into the datastore, or in Player/Workstation/virtualbox set the CD drive to the iso file.
 3. Boot to ISO
@@ -93,7 +93,7 @@ This assumes you have previously set up a PXE server as a VM according to above 
     Once playbook completes successfully, the server is ready to PXE boot devices.
 
 ## howto: Upgrade Fedora version
-Fedora upgrades about every 6 months, in April-ish and October-ish. When ready to test the next version, change the `version: ` line at the top of pxe-setup.yml (line 5) to the appropriate number.
+Fedora upgrades about every 6 months, in April-ish and October-ish. When ready to test the next version, change the `version: ##` line at the top of pxe-setup.yml (line 5) to the appropriate number.
 
 One potential breakage this may cause is the CERT Forensic Tools packages. The administrator of the PXE server should ensure that the repository at https://forensics.cert.org/fedora/cert/ is available for the new Fedora version before attempting upgrade (make sure there is a folder for the new version). They should also check to ensure a new key is not needed, by reviewing documentation at https://forensics.cert.org/#fedorasupport
 
@@ -135,7 +135,7 @@ And then, scp the files to the PXE server. (make sure SSH is on, on the pxe serv
 At times new software may be requested to be added to the base image. in order to do this, testing must be done:
 - first, have a baseline image laptop to test on
 - search the repositories to see if the software is already available. you can use a terminal and type in `dnf search [ software ]` to see if anything matches.
-    - if anything does, you can add it to the baseline by editing workstation-post.yml and/or virtual-post.yml around line 157/160, starting with - { mono-devel ... } where you can add it to the comma-separated list of software to install.
+    - if anything does, you can add it to the baseline by editing workstation-post.yml and/or virtual-post.yml around line 157/160, starting with `- { name: mono-devel,... }` where you can add it to the comma-separated list of software to install.
 - if it is not available in the repositories, the laptop should be used to test how the software can be installed, and the process recorded; it should then be automated with ansible and added to the workstation-post.yml and/or virtual-post.yml as appropriate.
 - once install is verified, default settings should be vetted for the application, if needed, and added to settings.tar.gz  as detailed above.
 
@@ -144,6 +144,8 @@ For single-user virtual machines, modest RAM and storage can be used (something 
 
 If you are making a main VNC server, make sure to scale storage and memory according to how many users will be created to use the machine. For example: for 15 users, a conservative configuration might be 8 CPUs, 16G RAM, and 200G storage.
 
-the script ```vncuseradd``` can be used to create a new user that has VNC capabilities. you should *NOT* use VNC for the main user created on the account as this will prevent login from the console GUI.
+the script `vncuseradd` can be used to create a new user that has VNC capabilities. you should *NOT* use VNC for the main user created on the account as this will prevent login from the console GUI.
 
 you can use vncuseradd to add users in bulk, like this: `vncuseradd -p PASSWORD LOGIN1 LOGIN2` etc.. or using bash expansion, like this: `vncuseradd -p PASSWORD LOGIN{1..5}` which will create 5 users called LOGIN# and assign them displays in VNC.
+
+this is not a secure method of setting passwords, and by default the VNC password will just be "password" - have users change their passwords with `passwd` and `vncpasswd` once they log in.
