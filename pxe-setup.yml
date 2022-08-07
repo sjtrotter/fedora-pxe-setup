@@ -33,24 +33,25 @@
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
         recurse: "{{ item.recurse }}"
+        state: "{{ item.state }}"
       with_items:
-        - { src: /opt/syslinux/usr/share/syslinux/pxelinux.0, dest: /var/lib/tftpboot/bios/pxelinux.0, recurse: no }
-        - { src: /opt/syslinux/usr/share/syslinux/menu.c32, dest: /var/lib/tftpboot/bios/menu.c32, recurse: no }
-        - { src: /opt/syslinux/usr/share/syslinux/vesamenu.c32, dest: /var/lib/tftpboot/bios/vesamenu.c32, recurse: no }
-        - { src: /opt/syslinux/usr/share/syslinux/ldlinux.c32, dest: /var/lib/tftpboot/bios/ldlinux.c32, recurse: no }
-        - { src: /opt/syslinux/usr/share/syslinux/libcom32.c32, dest: /var/lib/tftpboot/bios/libcom32.c32, recurse: no }
-        - { src: /opt/syslinux/usr/share/syslinux/libutil.c32, dest: /var/lib/tftpboot/bios/libutil.c32, recurse: no }
-        - { src: /opt/syslinux/usr/share/syslinux/lpxelinux.0, dest: /var/lib/tftpboot/bios/lpxelinux.0, recurse: no }
-        - { src: /opt/syslinux/boot/efi/EFI/fedora/shimx64.efi, dest: /var/lib/tftpboot/uefi/shimx64.efi, recurse: no }
-        - { src: /opt/syslinux/boot/efi/EFI/fedora/grubx64.efi, dest: /var/lib/tftpboot/uefi/grubx64.efi, recurse: no }
+        - { src: /opt/syslinux/usr/share/syslinux/pxelinux.0, dest: /var/lib/tftpboot/bios/pxelinux.0, recurse: no, state: file }
+        - { src: /opt/syslinux/usr/share/syslinux/menu.c32, dest: /var/lib/tftpboot/bios/menu.c32, recurse: no, state: file }
+        - { src: /opt/syslinux/usr/share/syslinux/vesamenu.c32, dest: /var/lib/tftpboot/bios/vesamenu.c32, recurse: no, state: file }
+        - { src: /opt/syslinux/usr/share/syslinux/ldlinux.c32, dest: /var/lib/tftpboot/bios/ldlinux.c32, recurse: no, state: file }
+        - { src: /opt/syslinux/usr/share/syslinux/libcom32.c32, dest: /var/lib/tftpboot/bios/libcom32.c32, recurse: no, state: file }
+        - { src: /opt/syslinux/usr/share/syslinux/libutil.c32, dest: /var/lib/tftpboot/bios/libutil.c32, recurse: no, state: file }
+        - { src: /opt/syslinux/usr/share/syslinux/lpxelinux.0, dest: /var/lib/tftpboot/bios/lpxelinux.0, recurse: no, state: file }
+        - { src: /opt/syslinux/boot/efi/EFI/fedora/shimx64.efi, dest: /var/lib/tftpboot/uefi/shimx64.efi, recurse: no, state: file }
+        - { src: /opt/syslinux/boot/efi/EFI/fedora/grubx64.efi, dest: /var/lib/tftpboot/uefi/grubx64.efi, recurse: no, state: file }
         # - { src: ./plays/workstation-post.yml, dest: "/var/www/html/f{{ version }}-inst.local/plays/workstation-post.yml" }
         # - { src: ./plays/virtual-post.yml, dest: "/var/www/html/f{{ version }}-inst.local/plays/virtual-post.yml" }
-        - { src: ./plays, dest: "/var/www/html/f{{ version }}-inst.local/", recurse: yes }
+        - { src: ./plays, dest: "/var/www/html/f{{ version }}-inst.local/", recurse: yes, state: directory }
         # - { src: ./other/networkminer.png, dest: "/var/www/html/f{{ version }}-inst.local/other/networkminer.png" }
         # - { src: ./other/settings.tar.gz, dest: "/var/www/html/f{{ version }}-inst.local/other/settings.tar.gz" }
         # - { src: ./other/wallpapers, dest: "/var/www/html/f{{ version }}-inst.local/" }
         # - { src: ./other/vncuseradd/vncuseradd, dest: "/var/www/html/f{{ version }}-inst.local/other/" }
-        - { src: ./other, dest: "/var/www/html/f{{ version }}-inst.local/", recurse: yes }
+        - { src: ./other, dest: "/var/www/html/f{{ version }}-inst.local/", recurse: yes, state: directory }
       
     - name: Download Required Install Files
       ansible.builtin.get_url:
