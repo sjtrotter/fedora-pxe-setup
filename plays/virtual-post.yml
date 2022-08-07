@@ -196,3 +196,11 @@
         - userdel -f testuser
         - rm -rf /home/testuser /var/spool/mail/testuser
         - mandb
+
+    - name: Write VNC Config
+      ansible.builtin.blockinfile:
+        path: /etc/tigervnc/vncserver-config-defaults
+        block: |
+          session=gnome
+          geometry=1920x1080
+          SecurityTypes=TLSVnc
