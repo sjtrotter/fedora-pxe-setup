@@ -49,8 +49,8 @@ the following items need to be within the documentation:
     - 200-250 GB Storage
     - for VM, Bridged Network Adapter, or in ESXi, connected to the subnet needed to image from.
 2. Get ISO
-    - Use latest Fedora Linux Server DVD: https://download.fedoraproject.org/pub/fedora/releases/ (and then navigate to version > Server > x86_64 > iso and download the dvd iso)
-        - this might change into a different hyperlink because it is a metalink to point to the closest mirror. the original is download.fedoraproject.org/pub/fedora/releases
+    - Use latest Fedora Linux Server DVD: https://download.fedoraproject.org/pub/fedora/linux/releases/ (and then navigate to version > Server > x86_64 > iso and download the dvd iso)
+        - this might change into a different hyperlink because it is a metalink to point to the closest mirror. the original is download.fedoraproject.org/pub/fedora/linux/releases
     - For physical servers, burn to CD or write to USB as needed
     - For a VM, load the ISO into the datastore, or in Player/Workstation/virtualbox set the CD drive to the iso file.
 3. Boot to ISO
