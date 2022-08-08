@@ -159,7 +159,7 @@
       with_items:
         - { name: "*", state: "latest", exclude: "kernel-core,kernel-modules", enablerepo: "", autoremove: no }
         - { name: "gnome-extensions-app,gnome-tweaks,gnome-shell-extension-frippery-applications-menu,gnome-shell-extension-apps-menu,gnome-shell-extension-caffeine,gnome-shell-extension-no-overview,gnome-shell-extension-window-list,gnome-shell-extension-dash-to-dock,https://forensics.cert.org/cert-forensics-tools-release-36.rpm,fedora-workstation-repositories", state: "latest", exclude: "", enablerepo: "", autoremove: no }
-        - { name: "mono-devel,net-tools,nmap,putty,screen,suricata,tcpdump,tcpreplay,wireshark,yara,google-chrome-stable,code,brim,zeek,autopsy,Volatility,avml,gcc,openssl,expect,remmina,tigervnc-server", state: latest, exclude: "", enablerepo: "google-chrome,code", autoremove: no }  # - powershell #,powershell
+        - { name: "mono-devel,vim,net-tools,nmap,putty,screen,suricata,tcpdump,tcpreplay,wireshark,yara,google-chrome-stable,code,brim,zeek,autopsy,Volatility,avml,gcc,openssl,expect,remmina,tigervnc-server", state: latest, exclude: "", enablerepo: "google-chrome,code", autoremove: no }  # - powershell #,powershell
         - { name: "fedora-chromium-config,gnome-boxes", state: "absent", exclude: "", enablerepo: "", autoremove: yes }
         # removed yubioath-desktop,pidgin,gnome-shell-extension-pidgin,libpurple-devel,libmarkdown-devel,json-glib-devel,glib2,git,opensc
         # added gnome-boxes to be removed, added tigervnc-server to be installed

@@ -154,7 +154,7 @@
       with_items:
         - { name: "*", state: "latest", exclude: "kernel-core,kernel-modules", enablerepo: "", autoremove: no }
         - { name: "gnome-extensions-app,gnome-tweaks,gnome-shell-extension-frippery-applications-menu,gnome-shell-extension-apps-menu,gnome-shell-extension-caffeine,gnome-shell-extension-no-overview,gnome-shell-extension-window-list,gnome-shell-extension-dash-to-dock,https://forensics.cert.org/cert-forensics-tools-release-36.rpm,fedora-workstation-repositories", state: "latest", exclude: "", enablerepo: "", autoremove: no }
-        - { name: "mono-devel,net-tools,nmap,putty,screen,suricata,tcpdump,tcpreplay,wireshark,yara,yubioath-desktop,google-chrome-stable,code,brim,zeek,autopsy,Volatility,avml,gcc,opensc,openssl,expect,remmina,pidgin,gnome-shell-extension-pidgin,libpurple-devel,libmarkdown-devel,json-glib-devel,glib2,git", state: latest, exclude: "", enablerepo: "google-chrome,code", autoremove: no }  # - powershell #,powershell
+        - { name: "mono-devel,vim,net-tools,nmap,putty,screen,suricata,tcpdump,tcpreplay,wireshark,yara,yubioath-desktop,google-chrome-stable,code,brim,zeek,autopsy,Volatility,avml,gcc,opensc,openssl,expect,remmina,pidgin,gnome-shell-extension-pidgin,libpurple-devel,libmarkdown-devel,json-glib-devel,glib2,git", state: latest, exclude: "", enablerepo: "google-chrome,code", autoremove: no }  # - powershell #,powershell
         - { name: "fedora-chromium-config", state: "absent", exclude: "", enablerepo: "", autoremove: yes }
 
     - name: Run Ad-Hoc Commands - Convert/Move/Update CA, Install Horizon, dconf Update, Create PIA User
