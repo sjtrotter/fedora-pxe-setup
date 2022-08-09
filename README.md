@@ -76,7 +76,7 @@ the following items need to be within the documentation:
     - `sudo dnf install ansible git NetworkManager-tui python3-netaddr`
     - `git clone https://github.com/sjtrotter/fedora-pxe-setup.git`
     - Use nmtui to set network information manually. Make sure you set the IP with a /XX for the CIDR, and make sure you set the DNS and Gateway appropriately. ( run `nmtui` )
-    - If using an ad-hoc version of settings.tar.gz, place it in the fedora-pxe-setup directory.
+    - If using an ad-hoc version of settings.tar.gz, place it in the fedora-pxe-setup/other directory.
     - `sudo ansible-playbook fedora-pxe-setup/pxe-setup.yml` (make sure you use the path into the git clone, if you have cd'd elsewhere)
 6. Done.
     Once the ansible playbook completes successfully, the server is ready to PXE boot devices.
