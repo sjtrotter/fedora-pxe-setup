@@ -76,7 +76,7 @@ the following items need to be within the documentation:
     - `sudo dnf install ansible git NetworkManager-tui python3-netaddr`
     - `git clone https://github.com/sjtrotter/fedora-pxe-setup.git`
     - Use nmtui to set network information manually. Make sure you set the IP with a /XX for the CIDR, and make sure you set the DNS and Gateway appropriately. ( run `nmtui` )
-    - If using an ad-hoc version of settings.tar.gz, place it in the fedora-pxe-setup directory.
+    - If using an ad-hoc version of settings.tar.gz, place it in the fedora-pxe-setup/other directory.
     - `sudo ansible-playbook fedora-pxe-setup/pxe-setup.yml` (make sure you use the path into the git clone, if you have cd'd elsewhere)
 6. Done.
     Once the ansible playbook completes successfully, the server is ready to PXE boot devices.
@@ -87,13 +87,13 @@ This assumes you have previously set up a PXE server as a VM according to above 
 2. Boot from console:
     - Login, then use nmtui ( run `nmtui` ) to set network information manually.
     - `cd fedora-pxe-setup` and then `git pull` to update files
-    - if using an ad-hoc version of settings.tar.gz, place it in the fedora-pxe-setup directory.
+    - if using an ad-hoc version of settings.tar.gz, place it in the fedora-pxe-setup/other directory.
     - `sudo ansible-playbook pxe-setup.yml` to update and place all files.
 3. Done.
     Once playbook completes successfully, the server is ready to PXE boot devices.
 
 ## howto: Upgrade Fedora version
-Fedora upgrades about every 6 months, in April-ish and October-ish. When ready to test the next version, change the `version: ##` line at the top of pxe-setup.yml (line 5) to the appropriate number.
+Fedora upgrades about every 6 months, in April-ish and October-ish. When ready to test the next version, change the `version: ##` line at the top of pxe-setup.yml (line 5) to the appropriate number. then re-run `sudo ansible-playbook pxe-setup.yml` to update.
 
 One potential breakage this may cause is the CERT Forensic Tools packages. The administrator of the PXE server should ensure that the repository at https://forensics.cert.org/fedora/cert/ is available for the new Fedora version before attempting upgrade (make sure there is a folder for the new version). They should also check to ensure a new key is not needed, by reviewing documentation at https://forensics.cert.org/#fedorasupport
 
